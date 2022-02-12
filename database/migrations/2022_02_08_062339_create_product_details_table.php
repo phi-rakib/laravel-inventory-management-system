@@ -17,6 +17,7 @@ class CreateProductDetailsTable extends Migration
             $table->id();
             $table->uuid('product_id');
             $table->text('description')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

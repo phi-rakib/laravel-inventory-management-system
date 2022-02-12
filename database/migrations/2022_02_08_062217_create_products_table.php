@@ -17,6 +17,7 @@ class CreateProductsTable extends Migration
             $table->uuid('id')->primary();
             $table->string('name')->unique();
             $table->tinyText('summary')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
