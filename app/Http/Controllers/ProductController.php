@@ -14,7 +14,17 @@ class ProductController extends Controller
         $products = Product::with("productDetails:id,product_id,description")
             ->where('name', 'like', "%{$searchTerm}%")
             ->simplePaginate(10);
-            
+
         return $products;
+    }
+
+    public function show($id)
+    {
+        $product = Product::with("productDetails:id,product_id,description")
+            ->where('id', '=', $id)
+            ->get()
+            ->first();
+
+        return $product;
     }
 }
