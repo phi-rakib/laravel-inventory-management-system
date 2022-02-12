@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\ProductDetails;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -33,17 +33,27 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        DB::transaction(function () use($request){
+        DB::transaction(function () use ($request) {
             $input = $request->all();
 
             $product_id = Str::uuid();
             $input['id'] = $product_id;
-            
+
             Product::create($input);
 
             $input['product_id'] = $input['id'];
 
             ProductDetails::create($input);
         });
+    }
+
+    public function destroy($id)
+    {
+        DB::transaction(function () use ($id) {
+            ProductDetails::where('product_id', $id)->delete();
+            product::destroy($id);
+        });
+
+        return response()->json(null, 204);
     }
 }
