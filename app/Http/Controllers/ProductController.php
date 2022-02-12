@@ -57,4 +57,18 @@ class ProductController extends Controller
 
         return response()->json(null, 204);
     }
+
+    public function update(Request $request, $id)
+    {
+        $input = $request->all();
+
+        $product = Product::findOrFail($id);
+
+        DB::transaction(function () use ($input, $product) {
+            $product->update($input);
+            $product->productDetails->update($input);
+        });
+
+        return response()->json($product, 200);
+    }
 }
