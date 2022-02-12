@@ -46,9 +46,11 @@ class ProductController extends Controller
 
     public function destroy($id)
     {
-        DB::transaction(function () use ($id) {
-            ProductDetails::where('product_id', $id)->delete();
-            product::destroy($id);
+        $product = Product::findOrFail($id);
+
+        DB::transaction(function () use ($product) {
+            $product->productDetails->delete();
+            $product->delete();
         });
 
         return response()->json(null, 204);
