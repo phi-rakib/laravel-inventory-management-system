@@ -6,7 +6,6 @@ use App\Models\Product;
 use App\Models\ProductDetails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -37,12 +36,9 @@ class ProductController extends Controller
         DB::transaction(function () use ($request) {
             $input = $request->all();
 
-            $product_id = Str::uuid();
-            $input['id'] = $product_id;
+            $product = Product::create($input);
 
-            Product::create($input);
-
-            $input['product_id'] = $input['id'];
+            $input['product_id'] = $product->id;
 
             ProductDetails::create($input);
         });
