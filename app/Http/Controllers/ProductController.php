@@ -16,6 +16,7 @@ class ProductController extends Controller
 
         $products = Product::with("productDetails:id,product_id,description")
             ->where('name', 'like', "%{$searchTerm}%")
+            ->orderBy('created_at')
             ->simplePaginate(10);
 
         return $products;
