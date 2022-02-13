@@ -9,12 +9,14 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::with("children")
-            ->whereNull('parent_id')
-            ->get();
-        return $categories;
+        $parents = Category::whereNull('parent_id')->get();
+
+        $categories = Category::whereNotNull('parent_id')
+            ->orderBy('parent_id')->get();
+
+        return $this->categoryTree($parents, $categories);
     }
-    
+
     public function store(Request $request)
     {
         $input = $request->all();
@@ -22,5 +24,43 @@ class CategoryController extends Controller
         $category = Category::create($input);
 
         return $category;
+    }
+
+    private function categoryTree($parents, $categories)
+    {
+        $tree = [];
+        foreach ($parents as $parent) {
+            $node = new Node($parent->name);
+            $tree[] = $node;
+            $this->dfs($categories, $node, $parent->id);
+        }
+
+        return $tree;
+    }
+
+    private $explore = [];
+
+    private function dfs($graph, $node, $key)
+    {
+        $this->explore[$key] = 1;
+        foreach ($graph as $g) {
+            if ($g->parent_id == $key && !isset($explore[$g->id])) {
+                $tmp_node = new Node($g->name);
+                $node->children[] = $tmp_node;
+                $this->dfs($graph, $tmp_node, $g->id);
+            }
+        }
+    }
+}
+
+class Node
+{
+    public $name;
+    public $children;
+
+    public function __construct($name)
+    {
+        $this->name = $name;
+        $this->children = [];
     }
 }
