@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Models\Sale;
 use App\Models\Category;
 use App\Models\Purchase;
-use Illuminate\Support\Str;
 use App\Models\ProductDetails;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -16,16 +15,9 @@ class Product extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'id',
         'name',
         'summary',
     ];
-
-    protected $primaryKey = 'id';
-
-    protected $keyType = 'string';
-
-    public $incrementing = false;
 
     public function productDetails()
     {
@@ -45,12 +37,5 @@ class Product extends Model
     public function sales()
     {
         return $this->hasMany(Sale::class);
-    }
-
-    protected static function booted()
-    {
-        static::creating(function($product){
-            $product->id = Str::uuid();
-        });
     }
 }

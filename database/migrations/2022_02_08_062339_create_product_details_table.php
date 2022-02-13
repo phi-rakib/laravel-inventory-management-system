@@ -15,7 +15,7 @@ class CreateProductDetailsTable extends Migration
     {
         Schema::create('product_details', function (Blueprint $table) {
             $table->id();
-            $table->uuid('product_id');
+            $table->unsignedBigInteger('product_id');
             $table->text('description')->nullable();
             $table->softDeletes();
             $table->timestamps();
