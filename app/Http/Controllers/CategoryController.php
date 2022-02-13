@@ -17,6 +17,15 @@ class CategoryController extends Controller
         return $this->categoryTree($parents, $categories);
     }
 
+    public function show($id)
+    {
+        $category = Category::findOrFail($id);
+
+        $sub_categories = $category->children;
+
+        return $sub_categories;
+    }
+
     public function store(Request $request)
     {
         $input = $request->all();
