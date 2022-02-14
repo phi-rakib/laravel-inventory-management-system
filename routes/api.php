@@ -32,3 +32,4 @@ Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/categories/{id}', [CategoryController::class, 'show']);
 
 Route::post('/user/registration', [AuthController::class, 'store']);
+Route::post('/user/login', [AuthController::class, 'login']);
