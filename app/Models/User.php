@@ -72,4 +72,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(Transaction::class);
     }
+
+    protected static function booted()
+    {
+        static::creating(function($user){
+            $user->password = bcrypt($user->password);
+        });
+    }
 }
