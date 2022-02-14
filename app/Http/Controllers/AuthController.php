@@ -11,8 +11,13 @@ class AuthController extends Controller
     public function store(Request $request)
     {
         $input = $request->all();
+
+        $user_agent = $request->header('User-Agent');
+
         $user = User::create($input);
-        $token = $user->createToken('MyAuthApp')->plainTextToken;
+
+        $token = $user->createToken($user_agent)->plainTextToken;
+
         return ["token" => $token];
     }
 
