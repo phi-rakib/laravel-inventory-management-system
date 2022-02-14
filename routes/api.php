@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 
@@ -29,3 +30,5 @@ Route::put('/product/{id}', [ProductController::class, 'update']);
 Route::post('/category', [CategoryController::class, 'store']);
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/categories/{id}', [CategoryController::class, 'show']);
+
+Route::post('/user/registration', [AuthController::class, 'store']);
