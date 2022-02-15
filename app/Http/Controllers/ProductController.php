@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum');
+    }
+
     public function index(Request $request)
     {
         $searchTerm = $request->query('q');
