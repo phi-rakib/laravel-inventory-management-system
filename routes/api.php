@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BrandController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 
@@ -33,3 +34,6 @@ Route::get('/categories/{id}', [CategoryController::class, 'show']);
 
 Route::post('/user/registration', [AuthController::class, 'store']);
 Route::post('/user/login', [AuthController::class, 'login']);
+
+Route::post('/brand', [BrandController::class, 'store']);
+Route::put('/brand/{brand}', [BrandController::class, 'update']);
