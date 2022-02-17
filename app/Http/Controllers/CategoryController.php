@@ -26,13 +26,14 @@ class CategoryController extends Controller
         return $sub_categories;
     }
 
-    public function store(Request $request)
+    public function store()
     {
-        $input = $request->all();
+        $data = request()->validate([
+            'name' => 'required',
+            'parent_id' => 'nullable|numeric',
+        ]);
 
-        $category = Category::create($input);
-
-        return $category;
+        return Category::create($data);
     }
 
     private function categoryTree($parents, $categories)
