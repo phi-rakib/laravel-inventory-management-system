@@ -28,12 +28,20 @@ class CategoryController extends Controller
 
     public function store()
     {
-        $data = request()->validate([
+        return Category::create($this->validateRequest());
+    }
+
+    public function update(Category $category)
+    {
+        $category->update($this->validateRequest());
+    }
+
+    private function validateRequest()
+    {
+        return request()->validate([
             'name' => 'required',
             'parent_id' => 'nullable|numeric',
         ]);
-
-        return Category::create($data);
     }
 
     private function categoryTree($parents, $categories)
