@@ -17,4 +17,15 @@ class UserController extends Controller
 
         User::create($data);
     }
+
+    public function update(User $user)
+    {
+        $data = request()->validate([
+            'email' => 'required|email',
+            'role_id' => 'required|numeric|min:1|max:4',
+            'name' => 'required',
+        ]);
+
+        $user->update($data);
+    }
 }
