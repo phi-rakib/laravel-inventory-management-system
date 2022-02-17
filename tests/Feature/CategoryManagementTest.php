@@ -45,4 +45,28 @@ class CategoryManagementTest extends TestCase
         $response->assertSessionHasErrors('parent_id');
     }
 
+    /** @test */
+    public function a_category_can_be_updated()
+    {
+        $response = $this->post('/api/category', [
+            'name' => 'noodles',
+            'parent_id' => null,
+        ]);
+
+        $response->assertCreated();
+
+        $this->assertCount(1, Category::all());
+
+        $category = Category::first();
+
+        $this->put('/api/category/' . $category->id, [
+            'name' => 'cook noodles',
+            'parent_id' => 1,
+        ]);
+
+        $updated_category = Category::first();
+        $this->assertEquals('cook noodles', $updated_category->name);
+        $this->assertEquals(1, $updated_category->parent_id);
+    }
+
 }
