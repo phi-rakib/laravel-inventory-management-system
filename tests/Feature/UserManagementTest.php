@@ -129,6 +129,33 @@ class UserManagementTest extends TestCase
 
         $response->assertSessionHasErrors('password');
     }
-    
 
+    /** @test */
+    public function a_user_can_be_updated()
+    {
+        $this->withoutExceptionHandling();
+
+        $this->post('/api/user', [
+            'role_id' => 2,
+            'name' => 'rakib',
+            'email' => 'phi.rakib@gmail.com',
+            'password' => 'abc',
+        ]);
+
+        $user = User::first();
+
+        $response = $this->put('/api/user/' . $user->id, [
+            'role_id' => 3,
+            'name' => 'haider',
+            'email' => 'test@test.com',
+        ]);
+
+        $response->assertOk();
+        
+        $updated_user = User::first();
+        $this->assertEquals('haider', $updated_user->name);
+        $this->assertEquals('test@test.com', $updated_user->email);
+        $this->assertEquals(3, $updated_user->role_id);
+        $this->assertEquals($user->password, $updated_user->password);
+    }
 }
