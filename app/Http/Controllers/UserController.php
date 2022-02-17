@@ -28,4 +28,9 @@ class UserController extends Controller
 
         $user->update($data);
     }
+
+    public function destroy(User $user)
+    {
+        $user->delete();
+    }
 }
