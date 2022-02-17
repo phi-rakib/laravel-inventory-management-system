@@ -17,6 +17,11 @@ class BrandController extends Controller
         $brand->update($this->validateRequest());
     }
 
+    public function destroy(Brand $brand)
+    {
+        $brand->delete();
+    }
+
     protected function validateRequest()
     {
         return request()->validate([
