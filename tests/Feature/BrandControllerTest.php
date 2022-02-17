@@ -13,11 +13,9 @@ class BrandControllerTest extends TestCase
     /** @test */
     public function a_brand_can_be_added()
     {
-        $this->withoutExceptionHandling();
-
         $response = $this->post('/api/brand', [
             'name' => 'Pran',
-            'description' => 'Pran Group'
+            'description' => 'Pran Group',
         ]);
 
         $response->assertOk();
@@ -30,7 +28,7 @@ class BrandControllerTest extends TestCase
     {
         $response = $this->post('/api/brand', [
             'name' => '',
-            'description' => 'Pran Group'
+            'description' => 'Pran Group',
         ]);
 
         $response->assertSessionHasErrors('name');
@@ -39,26 +37,39 @@ class BrandControllerTest extends TestCase
     /** @test */
     public function a_brand_can_be_updated()
     {
-        $this->withoutExceptionHandling();
-
         $this->post('/api/brand', [
             'name' => 'Pran',
-            'description' => 'Pran Group'
+            'description' => 'Pran Group',
         ]);
 
         $brand = Brand::first();
 
-        $this->put('/api/brand/'.$brand->id, [
+        $this->put($brand->path(), [
             'name' => 'Pran RFL',
-            'description' => 'Pran RFL Group'
+            'description' => 'Pran RFL Group',
         ]);
 
         $brand = Brand::first();
-        
 
         $this->assertEquals('Pran RFL', $brand->name);
         $this->assertEquals('Pran RFL Group', $brand->description);
     }
-    
-    
+
+    /** @test */
+    public function a_brand_can_be_deleted()
+    {
+        $this->post('/api/brand', [
+            'name' => 'Pran',
+            'description' => 'Pran Group',
+        ]);
+
+        $brand = Brand::first();
+
+        $this->assertCount(1, Brand::all());
+
+        $this->delete($brand->path());
+
+        $this->assertCount(0, Brand::all());
+    }
+
 }
