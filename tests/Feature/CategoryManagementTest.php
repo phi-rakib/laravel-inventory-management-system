@@ -69,4 +69,23 @@ class CategoryManagementTest extends TestCase
         $this->assertEquals(1, $updated_category->parent_id);
     }
 
+    /** @test */
+    public function a_category_can_be_deleted()
+    {
+        $response = $this->post('/api/category', [
+            'name' => 'noodles',
+            'parent_id' => null,
+        ]);
+
+        $response->assertCreated();
+
+        $this->assertCount(1, Category::all());
+
+        $category = Category::first();
+
+        $this->delete('/api/category/' . $category->id);
+
+        $this->assertCount(0, Category::all());
+    }
+
 }
