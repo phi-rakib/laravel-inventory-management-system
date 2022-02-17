@@ -1,11 +1,12 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\BrandController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\BrandController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,3 +39,5 @@ Route::post('/user/login', [AuthController::class, 'login']);
 Route::post('/brand', [BrandController::class, 'store']);
 Route::put('/brand/{brand}', [BrandController::class, 'update']);
 Route::delete('/brand/{brand}', [BrandController::class, 'destroy']);
+
+Route::post('/user', [UserController::class, 'store']);
