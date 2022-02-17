@@ -133,8 +133,6 @@ class UserManagementTest extends TestCase
     /** @test */
     public function a_user_can_be_updated()
     {
-        $this->withoutExceptionHandling();
-
         $this->post('/api/user', [
             'role_id' => 2,
             'name' => 'rakib',
@@ -151,11 +149,29 @@ class UserManagementTest extends TestCase
         ]);
 
         $response->assertOk();
-        
+
         $updated_user = User::first();
         $this->assertEquals('haider', $updated_user->name);
         $this->assertEquals('test@test.com', $updated_user->email);
         $this->assertEquals(3, $updated_user->role_id);
         $this->assertEquals($user->password, $updated_user->password);
+    }
+
+    /** @test */
+    public function a_user_can_be_deleted()
+    {
+        $this->post('/api/user', [
+            'role_id' => 2,
+            'name' => 'rakib',
+            'email' => 'phi.rakib@gmail.com',
+            'password' => 'abc',
+        ]);
+
+        $this->assertCount(1, User::all());
+
+        $user = User::first();
+        $this->delete('/api/user/' . $user->id);
+
+        $this->assertCount(0, User::all());
     }
 }
