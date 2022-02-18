@@ -2,14 +2,27 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Config;
 use Tests\TestCase;
+use App\Models\User;
+use Laravel\Sanctum\Sanctum;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UserManagementTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        Sanctum::actingAs(User::create([
+            'role_id' => 1,
+            'name' => 'test',
+            'email' => 'test@test.com',
+            'password' => 'abc',
+        ]), ['*']);
+    }
 
     /** @test */
     public function a_user_can_be_added()
@@ -23,7 +36,7 @@ class UserManagementTest extends TestCase
 
         $response->assertOk();
 
-        $this->assertCount(1, User::all());
+        $this->assertCount(2, User::all());
     }
 
     /** @test */
@@ -167,11 +180,11 @@ class UserManagementTest extends TestCase
             'password' => 'abc',
         ]);
 
-        $this->assertCount(1, User::all());
+        $this->assertCount(2, User::all());
 
         $user = User::first();
         $this->delete('/api/user/' . $user->id);
 
-        $this->assertCount(0, User::all());
+        $this->assertCount(1, User::all());
     }
 }
