@@ -3,13 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Brand;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 
 class BrandController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth:sanctum');
+    }
+
+    public function index()
+    {
+        return Brand::simplePaginate(Config::get('constants.pagination.max_item'));
     }
 
     public function store()
