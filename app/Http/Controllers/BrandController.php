@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 class BrandController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum');
+    }
+
     public function store()
     {
         Brand::create($this->validateRequest());
