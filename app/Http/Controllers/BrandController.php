@@ -17,6 +17,11 @@ class BrandController extends Controller
         return Brand::simplePaginate(Config::get('constants.pagination.max_item'));
     }
 
+    public function show(Brand $brand)
+    {
+        return $brand;
+    }
+
     public function store()
     {
         Brand::create($this->validateRequest());
