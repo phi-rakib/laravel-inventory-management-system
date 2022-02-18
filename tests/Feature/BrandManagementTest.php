@@ -3,12 +3,26 @@
 namespace Tests\Feature;
 
 use App\Models\Brand;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
-class BrandControllerTest extends TestCase
+class BrandManagementTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        Sanctum::actingAs(User::create([
+            'role_id' => 1,
+            'name' => 'rakib',
+            'email' => 'phi.rakib@gmail.com',
+            'password' => 'abc',
+        ]), ['*']);
+    }
 
     /** @test */
     public function a_brand_can_be_added()
@@ -71,5 +85,4 @@ class BrandControllerTest extends TestCase
 
         $this->assertCount(0, Brand::all());
     }
-
 }
