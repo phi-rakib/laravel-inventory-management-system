@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Brand;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Config;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -22,6 +23,18 @@ class BrandManagementTest extends TestCase
             'email' => 'phi.rakib@gmail.com',
             'password' => 'abc',
         ]), ['*']);
+    }
+
+    /** @test */
+    public function should_fetch_all_the_brands()
+    {
+        Brand::factory()->count(Config::get('constants.pagination.max_item'))->create();
+
+        $response = $this->get('/api/brand');
+
+        $response->assertOk();
+
+        $response->assertJsonCount(Config::get('constants.pagination.max_item'), 'data');
     }
 
     /** @test */
