@@ -45,4 +45,8 @@ return [
         ],
     ],
 
+    'pagination' => [
+        'max_item' => 10,
+    ],
+
 ];
