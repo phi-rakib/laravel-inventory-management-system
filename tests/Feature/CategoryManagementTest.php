@@ -2,13 +2,27 @@
 
 namespace Tests\Feature;
 
-use App\Models\Category;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use App\Models\User;
+use App\Models\Category;
+use Laravel\Sanctum\Sanctum;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CategoryManagementTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        Sanctum::actingAs(User::create([
+            'role_id' => 1,
+            'name' => 'rakib',
+            'email' => 'phi.rakib@gmail.com',
+            'password' => 'abc',
+        ]), ['*']);
+    }
 
     /** @test */
     public function a_category_can_be_added()
