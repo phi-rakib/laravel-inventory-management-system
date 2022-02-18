@@ -38,6 +38,22 @@ class BrandManagementTest extends TestCase
     }
 
     /** @test */
+    public function should_fetch_brand_by_id()
+    {
+        $this->withoutExceptionHandling();
+
+        Brand::factory()->count(10)->create();
+
+        $brand = Brand::inRandomOrder()->first();
+
+        $response = $this->get('/api/brand/' . $brand->id);
+
+        $response->assertOk();
+
+        $response->assertJson(['id' => $brand->id]);
+    }
+
+    /** @test */
     public function a_brand_can_be_added()
     {
         $response = $this->post('/api/brand', [
