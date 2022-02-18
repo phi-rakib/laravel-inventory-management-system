@@ -18,9 +18,17 @@ class ProductController extends Controller
     {
         $searchTerm = $request->query('q');
 
-        $products = Product::with("productDetails:id,product_id,description")
-            ->where('name', 'like', "%{$searchTerm}%")
-            ->orderBy('created_at')
+        $products = Product::with([
+            "brand:id,name",
+            "category:id,name",
+            "productDetails:id,product_id,description",
+        ]);
+
+        if (!empty($searchTerm)) {
+            $products = $products->where('name', 'like', "%{$searchTerm}%");
+        }
+
+        $products = $products->orderBy('created_at')
             ->simplePaginate(10);
 
         return $products;
@@ -28,7 +36,11 @@ class ProductController extends Controller
 
     public function show($id)
     {
-        $product = Product::with("productDetails:id,product_id,description")
+        $product = Product::with([
+            "brand:id,name",
+            "category:id,name",
+            "productDetails:id,product_id,description",
+        ])
             ->where('id', '=', $id)
             ->get()
             ->first();
@@ -36,23 +48,34 @@ class ProductController extends Controller
         return $product;
     }
 
-    public function store(Request $request)
+    public function store()
     {
-        DB::transaction(function () use ($request) {
-            $input = $request->all();
+        $data = $this->validateRequest();
 
-            $product = Product::create($input);
+        DB::transaction(function () use ($data) {
 
-            $input['product_id'] = $product->id;
+            $product = Product::create($data);
 
-            ProductDetails::create($input);
+            $data['product_id'] = $product->id;
+
+            ProductDetails::create($data);
         });
     }
 
-    public function destroy($id)
+    public function update(Product $product)
     {
-        $product = Product::findOrFail($id);
+        $data = $this->validateRequest();
 
+        DB::transaction(function () use ($data, $product) {
+            $product->update($data);
+            $product->productDetails->update($data);
+        });
+
+        return response()->json($product, 200);
+    }
+
+    public function destroy(Product $product)
+    {
         DB::transaction(function () use ($product) {
             $product->productDetails->delete();
             $product->delete();
@@ -61,17 +84,14 @@ class ProductController extends Controller
         return response()->json(null, 204);
     }
 
-    public function update(Request $request, $id)
+    protected function validateRequest()
     {
-        $input = $request->all();
-
-        $product = Product::findOrFail($id);
-
-        DB::transaction(function () use ($input, $product) {
-            $product->update($input);
-            $product->productDetails->update($input);
-        });
-
-        return response()->json($product, 200);
+        return request()->validate([
+            'name' => 'required',
+            'summary' => '',
+            'description' => '',
+            'brand_id' => 'required|numeric',
+            'category_id' => 'required|numeric',
+        ]);
     }
 }
