@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
 use App\Models\User;
-use Laravel\Sanctum\Sanctum;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Config;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class UserManagementTest extends TestCase
 {
@@ -16,23 +16,17 @@ class UserManagementTest extends TestCase
     {
         parent::setUp();
 
-        Sanctum::actingAs(User::create([
-            'role_id' => 1,
-            'name' => 'test',
-            'email' => 'test@test.com',
-            'password' => 'abc',
-        ]), ['*']);
+        Sanctum::actingAs(User::factory()->create(), ['*']);
     }
 
     /** @test */
     public function a_user_can_be_added()
     {
-        $response = $this->post('/api/user', [
+        $user = User::factory()->state([
             'role_id' => Config::get('constants.roles.customer'),
-            'name' => 'rakib',
-            'email' => 'phi.rakib@gmail.com',
-            'password' => 'abc',
-        ]);
+        ])->make()->makeVisible('password');
+
+        $response = $this->post('/api/user', $user->toArray());
 
         $response->assertOk();
 
@@ -42,12 +36,13 @@ class UserManagementTest extends TestCase
     /** @test */
     public function a_email_is_required()
     {
-        $response = $this->post('/api/user', [
+
+        $user = User::factory()->state([
             'role_id' => Config::get('constants.roles.customer'),
-            'name' => 'rakib',
             'email' => '',
-            'password' => 'abc',
-        ]);
+        ])->make()->makeVisible('password');
+
+        $response = $this->post('/api/user', $user->toArray());
 
         $response->assertSessionHasErrors('email');
     }
@@ -55,12 +50,12 @@ class UserManagementTest extends TestCase
     /** @test */
     public function a_valid_email_address_should_be_given()
     {
-        $response = $this->post('/api/user', [
+        $user = User::factory()->state([
             'role_id' => Config::get('constants.roles.customer'),
-            'name' => 'rakib',
             'email' => 'abc',
-            'password' => 'abc',
-        ]);
+        ])->make()->makeVisible('password');
+
+        $response = $this->post('/api/user', $user->toArray());
 
         $response->assertSessionHasErrors('email');
     }
@@ -68,12 +63,11 @@ class UserManagementTest extends TestCase
     /** @test */
     public function a_role_id_is_required()
     {
-        $response = $this->post('/api/user', [
-            'role_id' => '',
-            'name' => 'rakib',
-            'email' => 'phi.rakib@gmail.com',
-            'password' => 'abc',
-        ]);
+        $user = User::factory()->state([
+            'role_id' => null,
+        ])->make()->makeVisible('password');
+
+        $response = $this->post('/api/user', $user->toArray());
 
         $response->assertSessionHasErrors('role_id');
     }
@@ -81,12 +75,11 @@ class UserManagementTest extends TestCase
     /** @test */
     public function role_id_should_be_numeric()
     {
-        $response = $this->post('/api/user', [
+        $user = User::factory()->state([
             'role_id' => 'abc',
-            'name' => 'rakib',
-            'email' => 'phi.rakib@gmail.com',
-            'password' => 'abc',
-        ]);
+        ])->make()->makeVisible('password');
+
+        $response = $this->post('/api/user', $user->toArray());
 
         $response->assertSessionHasErrors('role_id');
     }
@@ -94,12 +87,11 @@ class UserManagementTest extends TestCase
     /** @test */
     public function role_id_is_greater_than_zero()
     {
-        $response = $this->post('/api/user', [
+        $user = User::factory()->state([
             'role_id' => 0,
-            'name' => 'rakib',
-            'email' => 'phi.rakib@gmail.com',
-            'password' => 'abc',
-        ]);
+        ])->make()->makeVisible('password');
+
+        $response = $this->post('/api/user', $user->toArray());
 
         $response->assertSessionHasErrors('role_id');
     }
@@ -107,25 +99,24 @@ class UserManagementTest extends TestCase
     /** @test */
     public function role_id_is_less_than_five()
     {
-        $response = $this->post('/api/user', [
+        $user = User::factory()->state([
             'role_id' => 10,
-            'name' => 'rakib',
-            'email' => 'phi.rakib@gmail.com',
-            'password' => 'abc',
-        ]);
+        ])->make()->makeVisible('password');
+
+        $response = $this->post('/api/user', $user->toArray());
 
         $response->assertSessionHasErrors('role_id');
+
     }
 
     /** @test */
     public function a_name_is_required()
     {
-        $response = $this->post('/api/user', [
-            'role_id' => 2,
-            'name' => '',
-            'email' => 'phi.rakib@gmail.com',
-            'password' => 'abc',
-        ]);
+        $user = User::factory()->state([
+            'name' => null,
+        ])->make()->makeVisible('password');
+
+        $response = $this->post('/api/user', $user->toArray());
 
         $response->assertSessionHasErrors('name');
     }
@@ -133,12 +124,11 @@ class UserManagementTest extends TestCase
     /** @test */
     public function a_password_is_required()
     {
-        $response = $this->post('/api/user', [
-            'role_id' => 2,
-            'name' => 'rakib',
-            'email' => 'phi.rakib@gmail.com',
-            'password' => '',
-        ]);
+        $user = User::factory()->state([
+            'role_id' => Config::get('constants.roles.customer'),
+        ])->make();
+
+        $response = $this->post('/api/user', $user->toArray());
 
         $response->assertSessionHasErrors('password');
     }
@@ -146,43 +136,44 @@ class UserManagementTest extends TestCase
     /** @test */
     public function a_user_can_be_updated()
     {
-        $this->post('/api/user', [
-            'role_id' => 2,
-            'name' => 'rakib',
-            'email' => 'phi.rakib@gmail.com',
-            'password' => 'abc',
-        ]);
+        $user = User::factory()->state([
+            'role_id' => Config::get('constants.roles.customer'),
+        ])->make()->makeVisible('password');
 
-        $user = User::first();
+        $this->post('/api/user', $user->toArray());
 
-        $response = $this->put('/api/user/' . $user->id, [
-            'role_id' => 3,
-            'name' => 'haider',
-            'email' => 'test@test.com',
-        ]);
+        $user = User::latest()->first();
+
+        $tmpUser = User::factory()->state([
+            'role_id' => Config::get('constants.roles.supplier'),
+        ])->make();
+
+        $response = $this->put('/api/user/' . $user->id, $tmpUser->toArray());
 
         $response->assertOk();
 
-        $updated_user = User::first();
-        $this->assertEquals('haider', $updated_user->name);
-        $this->assertEquals('test@test.com', $updated_user->email);
-        $this->assertEquals(3, $updated_user->role_id);
-        $this->assertEquals($user->password, $updated_user->password);
+        $updated_user = User::latest()->first();
+
+        $this->assertEquals($tmpUser->name, $updated_user->name);
+        $this->assertEquals($tmpUser->email, $updated_user->email);
+        $this->assertEquals($tmpUser->role_id, $updated_user->role_id);
     }
 
     /** @test */
     public function a_user_can_be_deleted()
     {
-        $this->post('/api/user', [
-            'role_id' => 2,
-            'name' => 'rakib',
-            'email' => 'phi.rakib@gmail.com',
-            'password' => 'abc',
-        ]);
+        $user = User::factory()->state([
+            'role_id' => Config::get('constants.roles.customer'),
+        ])->make()->makeVisible('password');
+
+        $response = $this->post('/api/user', $user->toArray());
+
+        $response->assertOk();
 
         $this->assertCount(2, User::all());
 
-        $user = User::first();
+        $user = User::latest()->first();
+
         $this->delete('/api/user/' . $user->id);
 
         $this->assertCount(1, User::all());
