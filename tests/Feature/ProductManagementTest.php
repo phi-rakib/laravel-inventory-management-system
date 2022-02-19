@@ -25,19 +25,12 @@ class ProductManagementTest extends TestCase
     /** @test */
     public function a_product_can_be_added()
     {
-        $this->post('/api/brand', [
-            'name' => 'ABC',
-            'description' => 'ABC Group',
-        ]);
+        Brand::factory()->count(5)->create();
+        $brand = Brand::inRandomOrder()->first();
 
-        $brand = Brand::first();
-
-        $this->post('/api/category', [
-            'name' => 'XYZ',
-            'parent_id' => null,
-        ]);
-
-        $category = Category::first();
+        Category::factory()->count(5)->child()->create();
+        $category = Category::inRandomOrder()->first();
+        
 
         $response = $this->post('/api/product', [
             'name' => 'coca cola',
@@ -56,19 +49,11 @@ class ProductManagementTest extends TestCase
     /** @test */
     public function a_name_is_required()
     {
-        $this->post('/api/brand', [
-            'name' => 'ABC',
-            'description' => 'ABC Group',
-        ]);
+        Brand::factory()->count(5)->create();
+        $brand = Brand::inRandomOrder()->first();
 
-        $brand = Brand::first();
-
-        $this->post('/api/category', [
-            'name' => 'XYZ',
-            'parent_id' => null,
-        ]);
-
-        $category = Category::first();
+        Category::factory()->count(5)->child()->create();
+        $category = Category::inRandomOrder()->first();
 
         $response = $this->post('/api/product', [
             'name' => '',
@@ -84,12 +69,8 @@ class ProductManagementTest extends TestCase
     /** @test */
     public function a_brand_id_is_required()
     {
-        $this->post('/api/category', [
-            'name' => 'XYZ',
-            'parent_id' => null,
-        ]);
-
-        $category = Category::first();
+        Category::factory()->count(5)->child()->create();
+        $category = Category::inRandomOrder()->first();
 
         $response = $this->post('/api/product', [
             'name' => 'coca cola',
@@ -104,12 +85,8 @@ class ProductManagementTest extends TestCase
     /** @test */
     public function a_brand_id_should_be_numeric()
     {
-        $this->post('/api/category', [
-            'name' => 'XYZ',
-            'parent_id' => null,
-        ]);
-
-        $category = Category::first();
+        Category::factory()->count(5)->child()->create();
+        $category = Category::inRandomOrder()->first();
 
         $response = $this->post('/api/product', [
             'name' => 'coca cola',
@@ -125,12 +102,8 @@ class ProductManagementTest extends TestCase
     /** @test */
     public function a_category_id_required()
     {
-        $this->post('/api/brand', [
-            'name' => 'ABC',
-            'description' => 'ABC Group',
-        ]);
-
-        $brand = Brand::first();
+        Brand::factory()->count(5)->create();
+        $brand = Brand::inRandomOrder()->first();
 
         $response = $this->post('/api/product', [
             'name' => 'coca cola',
@@ -145,12 +118,8 @@ class ProductManagementTest extends TestCase
     /** @test */
     public function a_category_id_should_be_numeric()
     {
-        $this->post('/api/brand', [
-            'name' => 'ABC',
-            'description' => 'ABC Group',
-        ]);
-
-        $brand = Brand::first();
+        Brand::factory()->count(5)->create();
+        $brand = Brand::inRandomOrder()->first();
 
         $response = $this->post('/api/product', [
             'name' => 'coca cola',
@@ -166,21 +135,11 @@ class ProductManagementTest extends TestCase
     /** @test */
     public function a_product_can_be_updated()
     {
-        $this->withoutExceptionHandling();
+        Brand::factory()->count(5)->create();
+        $brand = Brand::inRandomOrder()->first();
 
-        $this->post('/api/brand', [
-            'name' => 'ABC',
-            'description' => 'ABC Group',
-        ]);
-
-        $brand = Brand::first();
-
-        $this->post('/api/category', [
-            'name' => 'XYZ',
-            'parent_id' => null,
-        ]);
-
-        $category = Category::first();
+        Category::factory()->count(5)->child()->create();
+        $category = Category::inRandomOrder()->first();
 
         $response = $this->post('/api/product', [
             'name' => 'coca cola',
@@ -215,20 +174,11 @@ class ProductManagementTest extends TestCase
     /** @test */
     public function a_product_can_be_deleted()
     {
-        $this->withoutExceptionHandling();
-        $this->post('/api/brand', [
-            'name' => 'ABC',
-            'description' => 'ABC Group',
-        ]);
+        Brand::factory()->count(5)->create();
+        $brand = Brand::inRandomOrder()->first();
 
-        $brand = Brand::first();
-
-        $this->post('/api/category', [
-            'name' => 'XYZ',
-            'parent_id' => null,
-        ]);
-
-        $category = Category::first();
+        Category::factory()->count(5)->child()->create();
+        $category = Category::inRandomOrder()->first();
 
         $response = $this->post('/api/product', [
             'name' => 'coca cola',
