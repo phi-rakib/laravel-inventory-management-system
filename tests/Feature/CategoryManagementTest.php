@@ -25,6 +25,21 @@ class CategoryManagementTest extends TestCase
     }
 
     /** @test */
+    public function should_fetch_all_categories()
+    {
+        $this->withoutExceptionHandling();
+
+        Category::factory()->count(5)->child()->create();
+        
+        $response = $this->get('/api/category');
+
+        $response->assertOk();
+
+        $response->assertJsonCount(5);
+    }
+    
+
+    /** @test */
     public function a_category_can_be_added()
     {
         $response = $this->post('/api/category', [
