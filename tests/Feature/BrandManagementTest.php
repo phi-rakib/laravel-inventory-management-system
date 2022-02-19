@@ -23,7 +23,19 @@ class BrandManagementTest extends TestCase
     /** @test */
     public function should_fetch_all_the_brands()
     {
-        Brand::factory()->count(Config::get('constants.pagination.max_item'))->create();
+        Brand::factory()->count(3)->create();
+
+        $response = $this->get('/api/brand');
+
+        $response->assertOk();
+
+        $response->assertJsonCount(3, 'data');
+    }
+
+    /** @test */
+    public function pagination_should_show_n_items_per_page()
+    {
+        Brand::factory()->count(25)->create();
 
         $response = $this->get('/api/brand');
 
