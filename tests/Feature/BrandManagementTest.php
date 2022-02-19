@@ -63,10 +63,9 @@ class BrandManagementTest extends TestCase
     /** @test */
     public function a_brand_can_be_added()
     {
-        $response = $this->post('/api/brand', [
-            'name' => 'Pran',
-            'description' => 'Pran Group',
-        ]);
+        $brand = Brand::factory()->make()->toArray();
+
+        $response = $this->post('/api/brand', $brand);
 
         $response->assertOk();
 
@@ -76,10 +75,9 @@ class BrandManagementTest extends TestCase
     /** @test */
     public function a_name_is_required()
     {
-        $response = $this->post('/api/brand', [
-            'name' => '',
-            'description' => 'Pran Group',
-        ]);
+        $brand = Brand::factory()->state(['name' => ''])->make()->toArray();
+
+        $response = $this->post('/api/brand', $brand);
 
         $response->assertSessionHasErrors('name');
     }
@@ -87,35 +85,28 @@ class BrandManagementTest extends TestCase
     /** @test */
     public function a_brand_can_be_updated()
     {
-        $this->post('/api/brand', [
-            'name' => 'Pran',
-            'description' => 'Pran Group',
-        ]);
+        $this->post('/api/brand', Brand::factory()->make()->toArray());
 
         $brand = Brand::first();
 
-        $this->put($brand->path(), [
-            'name' => 'Pran RFL',
-            'description' => 'Pran RFL Group',
-        ]);
+        $tmpBrand = Brand::factory()->make();
 
-        $brand = Brand::first();
+        $this->put($brand->path(), $tmpBrand->toArray());
 
-        $this->assertEquals('Pran RFL', $brand->name);
-        $this->assertEquals('Pran RFL Group', $brand->description);
+        $updated_brand = Brand::first();
+
+        $this->assertEquals($tmpBrand->name, $updated_brand->name);
+        $this->assertEquals($tmpBrand->description, $updated_brand->description);
     }
 
     /** @test */
     public function a_brand_can_be_deleted()
     {
-        $this->post('/api/brand', [
-            'name' => 'Pran',
-            'description' => 'Pran Group',
-        ]);
-
-        $brand = Brand::first();
+        $this->post('/api/brand', Brand::factory()->make()->toArray());
 
         $this->assertCount(1, Brand::all());
+
+        $brand = Brand::first();
 
         $this->delete($brand->path());
 
