@@ -30,15 +30,13 @@ class ProductManagementTest extends TestCase
 
         Category::factory()->count(5)->child()->create();
         $category = Category::inRandomOrder()->first();
-        
 
-        $response = $this->post('/api/product', [
-            'name' => 'coca cola',
-            'summary' => 'coca cola summary',
-            'description' => 'coca cola description',
+        $product = Product::factory()->state([
             'brand_id' => $brand->id,
             'category_id' => $category->id,
-        ]);
+        ])->make()->toArray();
+
+        $response = $this->post('/api/product', $product);
 
         $response->assertOk();
 
@@ -55,13 +53,13 @@ class ProductManagementTest extends TestCase
         Category::factory()->count(5)->child()->create();
         $category = Category::inRandomOrder()->first();
 
-        $response = $this->post('/api/product', [
+        $product = Product::factory()->state([
             'name' => '',
-            'summary' => 'coca cola summary',
-            'description' => 'coca cola description',
             'brand_id' => $brand->id,
             'category_id' => $category->id,
-        ]);
+        ])->make()->toArray();
+
+        $response = $this->post('/api/product', $product);
 
         $response->assertSessionHasErrors('name');
     }
@@ -72,12 +70,11 @@ class ProductManagementTest extends TestCase
         Category::factory()->count(5)->child()->create();
         $category = Category::inRandomOrder()->first();
 
-        $response = $this->post('/api/product', [
-            'name' => 'coca cola',
-            'summary' => 'coca cola summary',
-            'description' => 'coca cola description',
+        $product = Product::factory()->state([
             'category_id' => $category->id,
-        ]);
+        ])->make()->toArray();
+
+        $response = $this->post('/api/product', $product);
 
         $response->assertSessionHasErrors('brand_id');
     }
@@ -88,13 +85,12 @@ class ProductManagementTest extends TestCase
         Category::factory()->count(5)->child()->create();
         $category = Category::inRandomOrder()->first();
 
-        $response = $this->post('/api/product', [
-            'name' => 'coca cola',
-            'summary' => 'coca cola summary',
-            'description' => 'coca cola description',
-            'category_id' => $category->id,
+        $product = Product::factory()->state([
             'brand_id' => 'abc',
-        ]);
+            'category_id' => $category->id,
+        ])->make()->toArray();
+
+        $response = $this->post('/api/product', $product);
 
         $response->assertSessionHasErrors('brand_id');
     }
@@ -105,12 +101,11 @@ class ProductManagementTest extends TestCase
         Brand::factory()->count(5)->create();
         $brand = Brand::inRandomOrder()->first();
 
-        $response = $this->post('/api/product', [
-            'name' => 'coca cola',
-            'summary' => 'coca cola summary',
-            'description' => 'coca cola description',
+        $product = Product::factory()->state([
             'brand_id' => $brand->id,
-        ]);
+        ])->make()->toArray();
+
+        $response = $this->post('/api/product', $product);
 
         $response->assertSessionHasErrors('category_id');
     }
@@ -121,13 +116,12 @@ class ProductManagementTest extends TestCase
         Brand::factory()->count(5)->create();
         $brand = Brand::inRandomOrder()->first();
 
-        $response = $this->post('/api/product', [
-            'name' => 'coca cola',
-            'summary' => 'coca cola summary',
-            'description' => 'coca cola description',
+        $product = Product::factory()->state([
             'brand_id' => $brand->id,
             'category_id' => 'abc',
-        ]);
+        ])->make()->toArray();
+
+        $response = $this->post('/api/product', $product);
 
         $response->assertSessionHasErrors('category_id');
     }
@@ -141,35 +135,30 @@ class ProductManagementTest extends TestCase
         Category::factory()->count(5)->child()->create();
         $category = Category::inRandomOrder()->first();
 
-        $response = $this->post('/api/product', [
-            'name' => 'coca cola',
-            'summary' => 'coca cola summary',
-            'description' => 'coca cola description',
+        $response = $this->post('/api/product', Product::factory()->state([
             'brand_id' => $brand->id,
             'category_id' => $category->id,
-        ]);
+        ])->make()->toArray());
 
         $response->assertOk();
 
         $product = Product::first();
 
-        $this->put('/api/product/' . $product->id, [
-            'name' => 'cocola cook noodles',
-            'summary' => 'cocola cook noodles summary',
-            'description' => 'cocola cook noodles description',
-            'brand_id' => $brand->id,
-            'category_id' => $category->id,
-        ]);
+        $tmpProduct = Product::factory()->state([
+            'brand_id' => Brand::inRandomOrder()->first()->id,
+            'category_id' => Category::inRandomOrder()->first()->id,
+        ])->make();
+
+        $response = $this->put('/api/product/' . $product->id, $tmpProduct->toArray());
 
         $updated_product = Product::with('productDetails')->first();
 
-        $this->assertEquals('cocola cook noodles', $updated_product->name);
-        $this->assertEquals('cocola cook noodles summary', $updated_product->summary);
-        $this->assertEquals($brand->id, $updated_product->brand_id);
-        $this->assertEquals($category->id, $updated_product->category_id);
-        $this->assertEquals('cocola cook noodles description', $updated_product->productDetails->description);
+        $this->assertEquals($tmpProduct->name, $updated_product->name);
+        $this->assertEquals($tmpProduct->summary, $updated_product->summary);
+        $this->assertEquals($tmpProduct->brand_id, $updated_product->brand_id);
+        $this->assertEquals($tmpProduct->category_id, $updated_product->category_id);
+        $this->assertEquals($tmpProduct->description, $updated_product->productDetails->description);
     }
-
 
     /** @test */
     public function a_product_can_be_deleted()
@@ -180,13 +169,12 @@ class ProductManagementTest extends TestCase
         Category::factory()->count(5)->child()->create();
         $category = Category::inRandomOrder()->first();
 
-        $response = $this->post('/api/product', [
-            'name' => 'coca cola',
-            'summary' => 'coca cola summary',
-            'description' => 'coca cola description',
+        $product = Product::factory()->state([
             'brand_id' => $brand->id,
             'category_id' => $category->id,
-        ]);
+        ])->make()->toArray();
+
+        $response = $this->post('/api/product', $product);
 
         $response->assertOk();
         $this->assertCount(1, Product::all());
