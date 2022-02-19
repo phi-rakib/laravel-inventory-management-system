@@ -19,12 +19,7 @@ class ProductManagementTest extends TestCase
     {
         parent::setUp();
 
-        Sanctum::actingAs(User::create([
-            'role_id' => 1,
-            'name' => 'rakib',
-            'email' => 'phi.rakib@gmail.com',
-            'password' => 'abc',
-        ]), ['*']);
+        Sanctum::actingAs(User::factory()->create(), ['*']);
     }
 
     /** @test */
