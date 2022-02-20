@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Config;
 
 class CategorySeeder extends Seeder
 {
@@ -15,7 +16,7 @@ class CategorySeeder extends Seeder
      */
     public function run()
     {
-        Category::factory()->count(3)->create();
+        Category::factory()->count(Config::get('constants.test.category.total_parent_item'))->create();
 
         foreach(range(1, 5) as $count) {
             Category::factory()->count(5)->state(new Sequence(
