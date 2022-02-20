@@ -14,7 +14,7 @@ class BrandController extends Controller
 
     public function index()
     {
-        return Brand::simplePaginate(Config::get('constants.pagination.max_item'));
+        return Brand::paginate(Config::get('constants.pagination.max_item'));
     }
 
     public function show(Brand $brand)
