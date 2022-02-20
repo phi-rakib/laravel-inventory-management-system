@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Brand;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Config;
 
 class BrandSeeder extends Seeder
 {
@@ -14,6 +15,8 @@ class BrandSeeder extends Seeder
      */
     public function run()
     {
-        Brand::factory()->count(50)->create();
+        Brand::factory()
+            ->count(Config::get('constants.test.brand.max_item'))
+            ->create();
     }
 }
