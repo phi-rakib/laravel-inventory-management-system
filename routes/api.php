@@ -39,6 +39,7 @@ Route::post('/brand', [BrandController::class, 'store']);
 Route::put('/brand/{brand}', [BrandController::class, 'update']);
 Route::delete('/brand/{brand}', [BrandController::class, 'destroy']);
 
+Route::get('/user', [UserController::class, 'index']);
 Route::post('/user', [UserController::class, 'store']);
 Route::put('/user/{user}', [UserController::class, 'update']);
 Route::delete('/user/{user}', [UserController::class, 'destroy']);
