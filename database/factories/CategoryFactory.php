@@ -20,13 +20,4 @@ class CategoryFactory extends Factory
             'parent_id' => null,
         ];
     }
-
-    public function child()
-    {
-        return $this->state(function(array $attributes){
-            return [
-                'parent_id' => Category::factory()->create()
-            ];
-        });
-    }
 }
