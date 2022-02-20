@@ -17,10 +17,11 @@ class ProductFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->word(),
+            'name' => $this->faker->unique()->domainWord(),
             'summary' => $this->faker->sentence(),
             'brand_id' => null,
             'category_id' => null,
+            'created_by' => null,
         ];
     }
 }
