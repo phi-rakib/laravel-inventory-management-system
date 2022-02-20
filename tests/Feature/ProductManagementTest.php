@@ -25,11 +25,9 @@ class ProductManagementTest extends TestCase
     /** @test */
     public function a_product_can_be_added()
     {
-        Brand::factory()->count(5)->create();
-        $brand = Brand::inRandomOrder()->first();
+        $brand = Brand::factory()->create();
 
-        Category::factory()->count(5)->child()->create();
-        $category = Category::inRandomOrder()->first();
+        $category = Category::factory()->create();
 
         $product = Product::factory()->state([
             'brand_id' => $brand->id,
@@ -49,11 +47,9 @@ class ProductManagementTest extends TestCase
     /** @test */
     public function a_name_is_required()
     {
-        Brand::factory()->count(5)->create();
-        $brand = Brand::inRandomOrder()->first();
+        $brand = Brand::factory()->create();
 
-        Category::factory()->count(5)->child()->create();
-        $category = Category::inRandomOrder()->first();
+        $category = Category::factory()->create();
 
         $product = Product::factory()->state([
             'name' => '',
@@ -71,8 +67,7 @@ class ProductManagementTest extends TestCase
     /** @test */
     public function a_brand_id_is_required()
     {
-        Category::factory()->count(5)->child()->create();
-        $category = Category::inRandomOrder()->first();
+        $category = Category::factory()->create();
 
         $product = Product::factory()->state([
             'category_id' => $category->id,
@@ -88,8 +83,7 @@ class ProductManagementTest extends TestCase
     /** @test */
     public function a_brand_id_should_be_numeric()
     {
-        Category::factory()->count(5)->child()->create();
-        $category = Category::inRandomOrder()->first();
+        $category = Category::factory()->create();
 
         $product = Product::factory()->state([
             'brand_id' => 'abc',
@@ -106,8 +100,7 @@ class ProductManagementTest extends TestCase
     /** @test */
     public function a_category_id_required()
     {
-        Brand::factory()->count(5)->create();
-        $brand = Brand::inRandomOrder()->first();
+        $brand = Brand::factory()->create();
 
         $product = Product::factory()->state([
             'brand_id' => $brand->id,
@@ -123,8 +116,7 @@ class ProductManagementTest extends TestCase
     /** @test */
     public function a_category_id_should_be_numeric()
     {
-        Brand::factory()->count(5)->create();
-        $brand = Brand::inRandomOrder()->first();
+        $brand = Brand::factory()->create();
 
         $product = Product::factory()->state([
             'brand_id' => $brand->id,
@@ -142,14 +134,12 @@ class ProductManagementTest extends TestCase
     public function a_product_can_be_updated()
     {
         Brand::factory()->count(5)->create();
-        $brand = Brand::inRandomOrder()->first();
 
-        Category::factory()->count(5)->child()->create();
-        $category = Category::inRandomOrder()->first();
+        Category::factory()->count(5)->create();
 
         $product = Product::factory()->state([
-            'brand_id' => $brand->id,
-            'category_id' => $category->id,
+            'brand_id' => Brand::inRandomOrder()->first()->id,
+            'category_id' => Category::inRandomOrder()->first()->id,
         ])->make()->toArray();
 
         $product_details = ProductDetails::factory()->make()->toArray();
@@ -181,11 +171,9 @@ class ProductManagementTest extends TestCase
     /** @test */
     public function a_product_can_be_deleted()
     {
-        Brand::factory()->count(5)->create();
-        $brand = Brand::inRandomOrder()->first();
+        $brand = Brand::factory()->create();
 
-        Category::factory()->count(5)->child()->create();
-        $category = Category::inRandomOrder()->first();
+        $category = Category::factory()->create();
 
         $product = Product::factory()->state([
             'brand_id' => $brand->id,
