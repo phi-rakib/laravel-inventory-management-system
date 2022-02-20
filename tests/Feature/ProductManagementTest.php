@@ -2,14 +2,19 @@
 
 namespace Tests\Feature;
 
-use App\Models\Brand;
-use App\Models\Category;
-use App\Models\Product;
-use App\Models\ProductDetails;
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
+use App\Models\User;
+use App\Models\Brand;
+use App\Models\Product;
+use App\Models\Category;
+use Laravel\Sanctum\Sanctum;
+use App\Models\ProductDetails;
+use Database\Seeders\UserSeeder;
+use Database\Seeders\BrandSeeder;
+use Database\Seeders\ProductSeeder;
+use Database\Seeders\CategorySeeder;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ProductManagementTest extends TestCase
 {
@@ -20,6 +25,23 @@ class ProductManagementTest extends TestCase
         parent::setUp();
 
         Sanctum::actingAs(User::factory()->create(), ['*']);
+    }
+
+    /** @test */
+    public function should_fetch_all_the_products()
+    {
+        $this->seed([
+            UserSeeder::class,
+            BrandSeeder::class,
+            CategorySeeder::class,
+            ProductSeeder::class,
+        ]);
+
+        $response = $this->get('/api/product');
+
+        $response->assertOk();
+
+        $this->assertEquals(Config::get('constants.test.product.max_item'), $response['total']);
     }
 
     /** @test */
