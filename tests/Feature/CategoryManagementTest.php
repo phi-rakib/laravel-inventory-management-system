@@ -4,7 +4,9 @@ namespace Tests\Feature;
 
 use App\Models\Category;
 use App\Models\User;
+use Database\Seeders\CategorySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Config;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -22,13 +24,13 @@ class CategoryManagementTest extends TestCase
     /** @test */
     public function should_fetch_all_categories()
     {
-        Category::factory()->count(5)->child()->create();
+        $this->seed(CategorySeeder::class);
 
         $response = $this->get('/api/category');
 
         $response->assertOk();
 
-        $response->assertJsonCount(5);
+        $response->assertJsonCount(Config::get('constants.test.category.total_parent_item'));
     }
 
     /** @test */
