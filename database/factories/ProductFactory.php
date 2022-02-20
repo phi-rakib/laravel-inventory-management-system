@@ -21,7 +21,6 @@ class ProductFactory extends Factory
             'summary' => $this->faker->sentence(),
             'brand_id' => null,
             'category_id' => null,
-            'description' => $this->faker->text(),
         ];
     }
 }
