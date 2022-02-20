@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-use Illuminate\Database\Eloquent\Factories\Sequence;
+use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Laravel\Sanctum\Sanctum;
@@ -23,29 +23,25 @@ class UserManagementTest extends TestCase
     /** @test */
     public function should_fetch_all_users()
     {
-        User::factory()->count(7)->state(new Sequence(
-            fn($sequence) => ['role_id' => rand(1, 4)]
-        ))->create();
+        $this->seed(UserSeeder::class);
 
         $response = $this->get('/api/user');
 
         $response->assertOk();
 
-        $response->assertJsonCount(8, 'data');
+        $this->assertEquals(Config::get('constants.test.user.max_item') + 1, $response['total']);
     }
 
     /** @test */
-    public function paginate_should_return_n_items()
+    public function paginate_should_return_n_users()
     {
-        User::factory()->state(new Sequence(
-            fn($sequence) => ['role_id' => rand(1, 4)]
-        ))->count(30)->create();
+        $this->seed(UserSeeder::class);
 
         $response = $this->get('/api/user');
 
         $response->assertOk();
 
-        $response->assertJsonCount(10, 'data');
+        $this->assertLessThanOrEqual(Config::get('constants.pagination.max_item'), count($response['data']));
     }
 
     /** @test */
