@@ -50,8 +50,17 @@ return [
     ],
 
     'test' => [
+        'user' => [
+            'max_item' => 15,
+        ],
         'category' => [
-            'total_parent_item' => 3
+            'total_parent_item' => 5,
+        ],
+        'brand' => [
+            'max_item' => 15,
+        ],
+        'product' => [
+            'max_item' => 100,
         ],
     ],
 
