@@ -49,4 +49,10 @@ return [
         'max_item' => 10,
     ],
 
+    'test' => [
+        'category' => [
+            'total_parent_item' => 3
+        ],
+    ],
+
 ];
