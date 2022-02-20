@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\ProductDetails;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
@@ -28,8 +29,9 @@ class ProductController extends Controller
             $products = $products->where('name', 'like', "%{$searchTerm}%");
         }
 
-        $products = $products->orderBy('created_at')
-            ->simplePaginate(10);
+        $products = $products
+            ->orderBy('created_at')
+            ->paginate(Config::get('constants.pagination.max_item'));
 
         return $products;
     }
