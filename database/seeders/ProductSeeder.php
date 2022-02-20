@@ -2,12 +2,13 @@
 
 namespace Database\Seeders;
 
-use App\Models\Brand;
-use App\Models\Category;
-use App\Models\Product;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Factories\Sequence;
+use App\Models\Brand;
+use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Database\Eloquent\Factories\Sequence;
 
 class ProductSeeder extends Seeder
 {
@@ -25,7 +26,7 @@ class ProductSeeder extends Seeder
                         'product_id' => $product->id,
                     ];
                 })
-                ->count(200)
+                ->count(Config::get('constants.test.product.max_item'))
                 ->state(new Sequence(
                     fn($sequence) => [
                         'brand_id' => Brand::inRandomOrder()->first()->id,
