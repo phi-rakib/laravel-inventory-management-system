@@ -3,12 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Config;
 
 class UserController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth:sanctum');
+    }
+
+    public function index()
+    {
+        return User::paginate(Config::get('constants.pagination.max_item'));
     }
 
     public function store()
