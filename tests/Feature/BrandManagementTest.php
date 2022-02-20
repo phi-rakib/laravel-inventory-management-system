@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Brand;
 use App\Models\User;
+use Database\Seeders\BrandSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
 use Laravel\Sanctum\Sanctum;
@@ -23,25 +24,25 @@ class BrandManagementTest extends TestCase
     /** @test */
     public function should_fetch_all_the_brands()
     {
-        Brand::factory()->count(3)->create();
+        $this->seed(BrandSeeder::class);
 
         $response = $this->get('/api/brand');
 
         $response->assertOk();
 
-        $response->assertJsonCount(3, 'data');
+        $this->assertEquals(Config::get('constants.test.brand.max_item'), $response['total']);
     }
 
     /** @test */
-    public function pagination_should_show_n_items_per_page()
+    public function pagination_should_show_n_brands_per_page()
     {
-        Brand::factory()->count(25)->create();
+        $this->seed(BrandSeeder::class);
 
         $response = $this->get('/api/brand');
 
         $response->assertOk();
 
-        $response->assertJsonCount(Config::get('constants.pagination.max_item'), 'data');
+        $this->assertLessThanOrEqual(Config::get('constants.pagination.max_item'), count($response['data']));
     }
 
     /** @test */
