@@ -19,9 +19,4 @@ class Brand extends Model
     {
         return $this->hasMany(Product::class);
     }
-
-    public function path()
-    {
-        return '/api/brand/' . $this->id;
-    }
 }
