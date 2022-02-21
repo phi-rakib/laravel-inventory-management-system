@@ -32,7 +32,7 @@ Route::post('/user', [UserController::class, 'store']);
 Route::put('/user/{user}', [UserController::class, 'update']);
 Route::delete('/user/{user}', [UserController::class, 'destroy']);
 
-Route::resources([
+Route::apiResources([
     'brand' => BrandController::class,
     'product' => ProductController::class,
 ]);
