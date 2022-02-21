@@ -17,6 +17,11 @@ class UserController extends Controller
         return User::paginate(Config::get('constants.pagination.max_item'));
     }
 
+    public function show(User $user)
+    {
+        return $user;
+    }
+
     public function store()
     {
         $data = request()->validate([
