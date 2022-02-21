@@ -45,6 +45,28 @@ class ProductManagementTest extends TestCase
     }
 
     /** @test */
+    public function should_fetch_product_by_id()
+    {
+        $this->seed([
+            UserSeeder::class,
+            BrandSeeder::class,
+            CategorySeeder::class,
+            ProductSeeder::class,
+        ]);
+
+        $product = Product::inRandomOrder()->first();
+
+        $response = $this->get(route('product.show', ['product' => $product->id]));
+
+        $response->assertOk();
+
+        $response->assertJson([
+            'id' => $product->id,
+            'name' => $product->name,
+        ]);
+    }
+
+    /** @test */
     public function a_product_can_be_added()
     {
         $brand = Brand::factory()->create();
