@@ -45,6 +45,23 @@ class ProductManagementTest extends TestCase
     }
 
     /** @test */
+    public function paginate_should_return_n_products_per_page()
+    {
+        $this->seed([
+            UserSeeder::class,
+            BrandSeeder::class,
+            CategorySeeder::class,
+            ProductSeeder::class,
+        ]);
+
+        $response = $this->get(route('product.index'));
+
+        $response->assertOk();
+
+        $this->assertLessThanOrEqual(Config::get('constants.pagination.max_item'), count($response['data']));
+    }
+
+    /** @test */
     public function should_fetch_product_by_id()
     {
         $this->seed([
