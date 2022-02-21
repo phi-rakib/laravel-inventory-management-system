@@ -27,13 +27,8 @@ Route::delete('/category/{category}', [CategoryController::class, 'destroy']);
 Route::post('/user/registration', [AuthController::class, 'store']);
 Route::post('/user/login', [AuthController::class, 'login']);
 
-Route::get('/user', [UserController::class, 'index']);
-Route::get('/user/{user}', [UserController::class, 'show']);
-Route::post('/user', [UserController::class, 'store']);
-Route::put('/user/{user}', [UserController::class, 'update']);
-Route::delete('/user/{user}', [UserController::class, 'destroy']);
-
 Route::apiResources([
+    'user' => UserController::class,
     'brand' => BrandController::class,
     'product' => ProductController::class,
 ]);
