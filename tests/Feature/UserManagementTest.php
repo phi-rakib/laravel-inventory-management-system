@@ -25,7 +25,7 @@ class UserManagementTest extends TestCase
     {
         $this->seed(UserSeeder::class);
 
-        $response = $this->get('/api/user');
+        $response = $this->get(route('user.index'));
 
         $response->assertOk();
 
@@ -37,7 +37,7 @@ class UserManagementTest extends TestCase
     {
         $this->seed(UserSeeder::class);
 
-        $response = $this->get('/api/user');
+        $response = $this->get(route('user.index'));
 
         $response->assertOk();
 
@@ -51,7 +51,7 @@ class UserManagementTest extends TestCase
 
         $user = User::inRandomOrder()->first();
 
-        $response = $this->get('/api/user/' . $user->id);
+        $response = $this->get(route('user.show', ['user' => $user->id]));
 
         $response->assertOk();
 
@@ -65,7 +65,7 @@ class UserManagementTest extends TestCase
             'role_id' => Config::get('constants.roles.customer'),
         ])->make()->makeVisible('password');
 
-        $response = $this->post('/api/user', $user->toArray());
+        $response = $this->post(route('user.store'), $user->toArray());
 
         $response->assertOk();
 
@@ -81,7 +81,7 @@ class UserManagementTest extends TestCase
             'email' => '',
         ])->make()->makeVisible('password');
 
-        $response = $this->post('/api/user', $user->toArray());
+        $response = $this->post(route('user.store'), $user->toArray());
 
         $response->assertSessionHasErrors('email');
     }
@@ -94,7 +94,7 @@ class UserManagementTest extends TestCase
             'email' => 'abc',
         ])->make()->makeVisible('password');
 
-        $response = $this->post('/api/user', $user->toArray());
+        $response = $this->post(route('user.store'), $user->toArray());
 
         $response->assertSessionHasErrors('email');
     }
@@ -106,7 +106,7 @@ class UserManagementTest extends TestCase
             'role_id' => null,
         ])->make()->makeVisible('password');
 
-        $response = $this->post('/api/user', $user->toArray());
+        $response = $this->post(route('user.store'), $user->toArray());
 
         $response->assertSessionHasErrors('role_id');
     }
@@ -118,7 +118,7 @@ class UserManagementTest extends TestCase
             'role_id' => 'abc',
         ])->make()->makeVisible('password');
 
-        $response = $this->post('/api/user', $user->toArray());
+        $response = $this->post(route('user.store'), $user->toArray());
 
         $response->assertSessionHasErrors('role_id');
     }
@@ -130,7 +130,7 @@ class UserManagementTest extends TestCase
             'role_id' => 0,
         ])->make()->makeVisible('password');
 
-        $response = $this->post('/api/user', $user->toArray());
+        $response = $this->post(route('user.store'), $user->toArray());
 
         $response->assertSessionHasErrors('role_id');
     }
@@ -142,7 +142,7 @@ class UserManagementTest extends TestCase
             'role_id' => 10,
         ])->make()->makeVisible('password');
 
-        $response = $this->post('/api/user', $user->toArray());
+        $response = $this->post(route('user.store'), $user->toArray());
 
         $response->assertSessionHasErrors('role_id');
 
@@ -155,7 +155,7 @@ class UserManagementTest extends TestCase
             'name' => null,
         ])->make()->makeVisible('password');
 
-        $response = $this->post('/api/user', $user->toArray());
+        $response = $this->post(route('user.store'), $user->toArray());
 
         $response->assertSessionHasErrors('name');
     }
@@ -167,7 +167,7 @@ class UserManagementTest extends TestCase
             'role_id' => Config::get('constants.roles.customer'),
         ])->make();
 
-        $response = $this->post('/api/user', $user->toArray());
+        $response = $this->post(route('user.store'), $user->toArray());
 
         $response->assertSessionHasErrors('password');
     }
@@ -179,7 +179,7 @@ class UserManagementTest extends TestCase
             'role_id' => Config::get('constants.roles.customer'),
         ])->make()->makeVisible('password');
 
-        $this->post('/api/user', $user->toArray());
+        $this->post(route('user.store'), $user->toArray());
 
         $user = User::latest()->first();
 
@@ -187,7 +187,7 @@ class UserManagementTest extends TestCase
             'role_id' => Config::get('constants.roles.supplier'),
         ])->make();
 
-        $response = $this->put('/api/user/' . $user->id, $tmpUser->toArray());
+        $response = $this->put(route('user.update', ['user' => $user->id]), $tmpUser->toArray());
 
         $response->assertOk();
 
@@ -205,7 +205,7 @@ class UserManagementTest extends TestCase
             'role_id' => Config::get('constants.roles.customer'),
         ])->make()->makeVisible('password');
 
-        $response = $this->post('/api/user', $user->toArray());
+        $response = $this->post(route('user.store'), $user->toArray());
 
         $response->assertOk();
 
@@ -213,7 +213,7 @@ class UserManagementTest extends TestCase
 
         $user = User::latest()->first();
 
-        $this->delete('/api/user/' . $user->id);
+        $this->delete(route('user.destroy', ['user' => $user->id]));
 
         $this->assertCount(1, User::all());
     }
