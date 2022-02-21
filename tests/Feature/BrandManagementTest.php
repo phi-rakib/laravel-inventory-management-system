@@ -26,7 +26,7 @@ class BrandManagementTest extends TestCase
     {
         $this->seed(BrandSeeder::class);
 
-        $response = $this->get('/api/brand');
+        $response = $this->get(route('brand.index'));
 
         $response->assertOk();
 
@@ -38,7 +38,7 @@ class BrandManagementTest extends TestCase
     {
         $this->seed(BrandSeeder::class);
 
-        $response = $this->get('/api/brand');
+        $response = $this->get(route('brand.index'));
 
         $response->assertOk();
 
@@ -54,7 +54,7 @@ class BrandManagementTest extends TestCase
 
         $brand = Brand::inRandomOrder()->first();
 
-        $response = $this->get('/api/brand/' . $brand->id);
+        $response = $this->get(route('brand.show', ['brand' => $brand->id]));
 
         $response->assertOk();
 
@@ -66,7 +66,7 @@ class BrandManagementTest extends TestCase
     {
         $brand = Brand::factory()->make()->toArray();
 
-        $response = $this->post('/api/brand', $brand);
+        $response = $this->post(route('brand.store'), $brand);
 
         $response->assertOk();
 
@@ -78,7 +78,7 @@ class BrandManagementTest extends TestCase
     {
         $brand = Brand::factory()->state(['name' => ''])->make()->toArray();
 
-        $response = $this->post('/api/brand', $brand);
+        $response = $this->post(route('brand.store'), $brand);
 
         $response->assertSessionHasErrors('name');
     }
@@ -86,13 +86,13 @@ class BrandManagementTest extends TestCase
     /** @test */
     public function a_brand_can_be_updated()
     {
-        $this->post('/api/brand', Brand::factory()->make()->toArray());
+        $this->post(route('brand.store'), Brand::factory()->make()->toArray());
 
         $brand = Brand::first();
 
         $tmpBrand = Brand::factory()->make();
 
-        $this->put($brand->path(), $tmpBrand->toArray());
+        $this->put(route('brand.update', ['brand' => $brand->id]), $tmpBrand->toArray());
 
         $updated_brand = Brand::first();
 
@@ -103,13 +103,13 @@ class BrandManagementTest extends TestCase
     /** @test */
     public function a_brand_can_be_deleted()
     {
-        $this->post('/api/brand', Brand::factory()->make()->toArray());
+        $this->post(route('brand.store'), Brand::factory()->make()->toArray());
 
         $this->assertCount(1, Brand::all());
 
         $brand = Brand::first();
 
-        $this->delete($brand->path());
+        $this->delete(route('brand.destroy', ['brand' => $brand->id]));
 
         $this->assertCount(0, Brand::all());
     }
