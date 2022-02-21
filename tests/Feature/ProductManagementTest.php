@@ -30,12 +30,7 @@ class ProductManagementTest extends TestCase
     /** @test */
     public function should_fetch_all_the_products()
     {
-        $this->seed([
-            UserSeeder::class,
-            BrandSeeder::class,
-            CategorySeeder::class,
-            ProductSeeder::class,
-        ]);
+        $this->initSeeder();
 
         $response = $this->get(route('product.index'));
 
@@ -47,12 +42,7 @@ class ProductManagementTest extends TestCase
     /** @test */
     public function paginate_should_return_n_products_per_page()
     {
-        $this->seed([
-            UserSeeder::class,
-            BrandSeeder::class,
-            CategorySeeder::class,
-            ProductSeeder::class,
-        ]);
+        $this->initSeeder();
 
         $response = $this->get(route('product.index'));
 
@@ -64,12 +54,7 @@ class ProductManagementTest extends TestCase
     /** @test */
     public function should_fetch_product_by_id()
     {
-        $this->seed([
-            UserSeeder::class,
-            BrandSeeder::class,
-            CategorySeeder::class,
-            ProductSeeder::class,
-        ]);
+        $this->initSeeder();
 
         $product = Product::inRandomOrder()->first();
 
@@ -258,6 +243,16 @@ class ProductManagementTest extends TestCase
 
         $this->assertCount(0, Product::all());
         $this->assertCount(0, ProductDetails::all());
+    }
+
+    private function initSeeder()
+    {
+        $this->seed([
+            UserSeeder::class,
+            BrandSeeder::class,
+            CategorySeeder::class,
+            ProductSeeder::class,
+        ]);
     }
 
 }
