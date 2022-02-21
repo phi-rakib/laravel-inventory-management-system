@@ -2,19 +2,19 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use App\Models\User;
 use App\Models\Brand;
-use App\Models\Product;
 use App\Models\Category;
-use Laravel\Sanctum\Sanctum;
+use App\Models\Product;
 use App\Models\ProductDetails;
-use Database\Seeders\UserSeeder;
+use App\Models\User;
 use Database\Seeders\BrandSeeder;
-use Database\Seeders\ProductSeeder;
 use Database\Seeders\CategorySeeder;
-use Illuminate\Support\Facades\Config;
+use Database\Seeders\ProductSeeder;
+use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Config;
+use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class ProductManagementTest extends TestCase
 {
@@ -37,7 +37,7 @@ class ProductManagementTest extends TestCase
             ProductSeeder::class,
         ]);
 
-        $response = $this->get('/api/product');
+        $response = $this->get(route('product.index'));
 
         $response->assertOk();
 
@@ -58,7 +58,7 @@ class ProductManagementTest extends TestCase
 
         $product_details = ProductDetails::factory()->make()->toArray();
 
-        $response = $this->post('/api/product', array_merge($product, $product_details));
+        $response = $this->post(route('product.store'), array_merge($product, $product_details));
 
         $response->assertOk();
 
@@ -81,7 +81,7 @@ class ProductManagementTest extends TestCase
 
         $product_details = ProductDetails::factory()->make()->toArray();
 
-        $response = $this->post('/api/product', array_merge($product, $product_details));
+        $response = $this->post(route('product.store'), array_merge($product, $product_details));
 
         $response->assertSessionHasErrors('name');
     }
@@ -97,7 +97,7 @@ class ProductManagementTest extends TestCase
 
         $product_details = ProductDetails::factory()->make()->toArray();
 
-        $response = $this->post('/api/product', array_merge($product, $product_details));
+        $response = $this->post(route('product.store'), array_merge($product, $product_details));
 
         $response->assertSessionHasErrors('brand_id');
     }
@@ -114,7 +114,7 @@ class ProductManagementTest extends TestCase
 
         $product_details = ProductDetails::factory()->make()->toArray();
 
-        $response = $this->post('/api/product', array_merge($product, $product_details));
+        $response = $this->post(route('product.store'), array_merge($product, $product_details));
 
         $response->assertSessionHasErrors('brand_id');
     }
@@ -130,7 +130,7 @@ class ProductManagementTest extends TestCase
 
         $product_details = ProductDetails::factory()->make()->toArray();
 
-        $response = $this->post('/api/product', array_merge($product, $product_details));
+        $response = $this->post(route('product.store'), array_merge($product, $product_details));
 
         $response->assertSessionHasErrors('category_id');
     }
@@ -147,7 +147,7 @@ class ProductManagementTest extends TestCase
 
         $product_details = ProductDetails::factory()->make()->toArray();
 
-        $response = $this->post('/api/product', array_merge($product, $product_details));
+        $response = $this->post(route('product.store'), array_merge($product, $product_details));
 
         $response->assertSessionHasErrors('category_id');
     }
@@ -166,7 +166,7 @@ class ProductManagementTest extends TestCase
 
         $product_details = ProductDetails::factory()->make()->toArray();
 
-        $response = $this->post('/api/product', array_merge($product, $product_details));
+        $response = $this->post(route('product.store'), array_merge($product, $product_details));
 
         $response->assertOk();
 
@@ -179,7 +179,10 @@ class ProductManagementTest extends TestCase
 
         $tmp_product_details = ProductDetails::factory()->make();
 
-        $response = $this->put('/api/product/' . $product->id, array_merge($tmp_product->toArray(), $tmp_product_details->toArray()));
+        $response = $this->put(
+            route('product.update', ['product' => $product->id]),
+            array_merge($tmp_product->toArray(), $tmp_product_details->toArray())
+        );
 
         $updated_product = Product::with('productDetails')->first();
 
@@ -204,7 +207,7 @@ class ProductManagementTest extends TestCase
 
         $product_details = ProductDetails::factory()->make()->toArray();
 
-        $response = $this->post('/api/product', array_merge($product, $product_details));
+        $response = $this->post(route('product.store'), array_merge($product, $product_details));
 
         $response->assertOk();
         $this->assertCount(1, Product::all());
@@ -212,7 +215,7 @@ class ProductManagementTest extends TestCase
 
         $product = Product::first();
 
-        $this->delete('/api/product/' . $product->id);
+        $this->delete(route('product.destroy', ['product' => $product->id]));
 
         $this->assertCount(0, Product::all());
         $this->assertCount(0, ProductDetails::all());
