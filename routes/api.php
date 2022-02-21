@@ -33,13 +33,11 @@ Route::delete('/category/{category}', [CategoryController::class, 'destroy']);
 Route::post('/user/registration', [AuthController::class, 'store']);
 Route::post('/user/login', [AuthController::class, 'login']);
 
-Route::get('/brand', [BrandController::class, 'index']);
-Route::get('/brand/{brand}', [BrandController::class, 'show']);
-Route::post('/brand', [BrandController::class, 'store']);
-Route::put('/brand/{brand}', [BrandController::class, 'update']);
-Route::delete('/brand/{brand}', [BrandController::class, 'destroy']);
-
 Route::get('/user', [UserController::class, 'index']);
 Route::post('/user', [UserController::class, 'store']);
 Route::put('/user/{user}', [UserController::class, 'update']);
 Route::delete('/user/{user}', [UserController::class, 'destroy']);
+
+Route::resources([
+    'brand' => BrandController::class,
+]);
