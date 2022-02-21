@@ -45,6 +45,20 @@ class UserManagementTest extends TestCase
     }
 
     /** @test */
+    public function should_fetch_user_by_id()
+    {
+        $this->seed(UserSeeder::class);
+
+        $user = User::inRandomOrder()->first();
+
+        $response = $this->get('/api/user/' . $user->id);
+
+        $response->assertOk();
+
+        $response->assertJson(['id' => $user->id]);
+    }
+
+    /** @test */
     public function a_user_can_be_added()
     {
         $user = User::factory()->state([
