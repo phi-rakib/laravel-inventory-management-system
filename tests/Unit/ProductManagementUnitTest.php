@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\Models\Product;
+use App\Models\ProductDetails;
 use App\Models\User;
 use Database\Seeders\BrandSeeder;
 use Database\Seeders\CategorySeeder;
@@ -36,11 +37,14 @@ class ProductManagementUnitTest extends TestCase
 
         $product = Product::inRandomOrder()->first();
 
+        $product->productDetails->delete();
         $product->delete();
 
         $this->assertCount(Config::get('constants.test.product.max_item') - 1, Product::all());
+        $this->assertCount(Config::get('constants.test.product.max_item') - 1, ProductDetails::all());
 
         $this->assertCount(Config::get('constants.test.product.max_item'), Product::withTrashed()->get());
+        $this->assertCount(Config::get('constants.test.product.max_item'), ProductDetails::withTrashed()->get());
     }
 
 }
