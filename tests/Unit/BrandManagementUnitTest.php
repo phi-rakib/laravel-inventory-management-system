@@ -37,5 +37,21 @@ class BrandManagementUnitTest extends TestCase
 
         $this->assertEquals($user->id, $updated_brand->updated_by);
     }
+
+    /** @test */
+    public function soft_delete_is_working_properly()
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user, ['*']);
+
+        $brand = Brand::factory()->create();
+        $this->assertCount(1, Brand::all());
+
+        $brand->delete();
+        $this->assertCount(0, Brand::all());
+        
+        $this->assertCount(1, Brand::withTrashed()->get());
+    }
+    
     
 }
