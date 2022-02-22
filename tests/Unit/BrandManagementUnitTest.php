@@ -21,4 +21,21 @@ class BrandManagementUnitTest extends TestCase
         $brand = Brand::factory()->create();
         $this->assertEquals($user->id, $brand->created_by);
     }
+
+    /** @test */
+    public function can_identify_updater_of_a_brand_by_user_id()
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user, ['*']);
+
+        $brand = Brand::factory()->create();
+        $tmp_brand = Brand::factory()->make();
+
+        $brand->update($tmp_brand->toArray());
+
+        $updated_brand = Brand::first();
+
+        $this->assertEquals($user->id, $updated_brand->updated_by);
+    }
+    
 }
