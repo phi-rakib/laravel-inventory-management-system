@@ -5,8 +5,11 @@ namespace Tests\Unit;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Brand;
+use App\Models\Product;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Sanctum\Sanctum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Schema;
 
 class BrandManagementUnitTest extends TestCase
 {
@@ -52,6 +55,21 @@ class BrandManagementUnitTest extends TestCase
         
         $this->assertCount(1, Brand::withTrashed()->get());
     }
-    
-    
+
+    /** @test */
+    public function a_brand_has_many_products()
+    {
+        $brand = new Brand();
+        $foreign_key = 'brand_id';
+
+        $relationship = $brand->products();
+        $related_model = $relationship->getRelated();
+        
+        $this->assertInstanceOf(HasMany::class, $relationship);
+        $this->assertInstanceOf(Product::class, $related_model);
+
+        $this->assertEquals($foreign_key, $relationship->getForeignKeyName());
+
+        $this->assertTrue(Schema::hasColumns($related_model->getTable(), [$foreign_key]));
+    }
 }
