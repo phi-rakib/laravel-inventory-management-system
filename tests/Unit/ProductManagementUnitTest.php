@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Models\Brand;
 use App\Models\Product;
 use App\Models\ProductDetails;
 use App\Models\User;
@@ -9,8 +10,10 @@ use Database\Seeders\BrandSeeder;
 use Database\Seeders\CategorySeeder;
 use Database\Seeders\ProductSeeder;
 use Database\Seeders\UserSeeder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Schema;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
@@ -47,4 +50,21 @@ class ProductManagementUnitTest extends TestCase
         $this->assertCount(Config::get('constants.test.product.max_item'), ProductDetails::withTrashed()->get());
     }
 
+    /** @test */
+    public function a_product_has_one_brand()
+    {
+        $product = new Product();
+        $foreign_key = 'brand_id';
+
+        $relationship = $product->brand();
+        $related_model = $relationship->getRelated();
+
+        $this->assertInstanceOf(BelongsTo::class, $relationship);
+
+        $this->assertInstanceOf(Brand::class, $related_model);
+
+        $this->assertEquals($foreign_key, $relationship->getForeignKeyName());
+
+        $this->assertTrue(Schema::hasColumns($relationship->getParent()->getTable(), [$foreign_key]));
+    }
 }
