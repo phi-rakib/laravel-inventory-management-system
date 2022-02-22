@@ -19,6 +19,7 @@ class CreateBrandsTable extends Migration
             $table->text('description')->nullable();
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
