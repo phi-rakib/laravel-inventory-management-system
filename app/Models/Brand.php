@@ -26,5 +26,9 @@ class Brand extends Model
         static::creating(function ($brand) {
             $brand->created_by = Auth::user()->id;
         });
+
+        static::updating(function($brand) {
+            $brand->updated_by = Auth::user()->id;
+        });
     }
 }
