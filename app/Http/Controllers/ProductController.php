@@ -19,11 +19,7 @@ class ProductController extends Controller
     {
         $searchTerm = $request->query('q');
 
-        $products = Product::with([
-            "brand:id,name",
-            "category:id,name",
-            "productDetails:id,product_id,description",
-        ]);
+        $products = $this->productSelect();
 
         if (!empty($searchTerm)) {
             $products = $products->where('name', 'like', "%{$searchTerm}%");
@@ -38,16 +34,7 @@ class ProductController extends Controller
 
     public function show($id)
     {
-        $product = Product::with([
-            "brand:id,name",
-            "category:id,name",
-            "productDetails:id,product_id,description",
-        ])
-            ->where('id', '=', $id)
-            ->get()
-            ->first();
-
-        return $product;
+        return $this->productSelect()->where('id', $id)->get()->first();
     }
 
     public function store()
@@ -86,7 +73,7 @@ class ProductController extends Controller
         return response()->json(null, 204);
     }
 
-    protected function validateRequest()
+    private function validateRequest()
     {
         return request()->validate([
             'name' => 'required',
@@ -94,6 +81,15 @@ class ProductController extends Controller
             'description' => '',
             'brand_id' => 'required|numeric',
             'category_id' => 'required|numeric',
+        ]);
+    }
+
+    private function productSelect()
+    {
+        return Product::with([
+            "brand:id,name",
+            "category:id,name",
+            "productDetails:id,product_id,description",
         ]);
     }
 }
