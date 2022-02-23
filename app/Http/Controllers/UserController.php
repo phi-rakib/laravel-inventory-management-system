@@ -24,23 +24,19 @@ class UserController extends Controller
 
     public function store()
     {
-        $data = request()->validate([
-            'email' => 'required|email',
-            'role_id' => 'required|numeric|min:1|max:4',
-            'name' => 'required',
-            'password' => 'required',
-        ]);
+        $data = request()->validate($this->requestValidationArray());
 
         User::create($data);
     }
 
     public function update(User $user)
     {
-        $data = request()->validate([
-            'email' => 'required|email',
-            'role_id' => 'required|numeric|min:1|max:4',
-            'name' => 'required',
-        ]);
+        $data = request()
+            ->validate(array_filter(
+                $this->requestValidationArray(),
+                fn($item) => $item != 'password',
+                ARRAY_FILTER_USE_KEY)
+            );
 
         $user->update($data);
     }
@@ -48,5 +44,15 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         $user->delete();
+    }
+
+    private function requestValidationArray()
+    {
+        return [
+            'email' => 'required|email',
+            'role_id' => 'required|numeric|min:1|max:4',
+            'name' => 'required',
+            'password' => 'required',
+        ];
     }
 }
