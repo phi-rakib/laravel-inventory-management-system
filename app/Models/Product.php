@@ -57,4 +57,13 @@ class Product extends Model
             $product->updated_by = Auth::user()->id;
         });
     }
+
+    public function scopeProducts($query)
+    {
+        return $query->with([
+            "brand:id,name",
+            "category:id,name",
+            "productDetails:id,product_id,description",
+        ]);
+    }
 }
