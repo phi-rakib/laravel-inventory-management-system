@@ -19,22 +19,19 @@ class ProductController extends Controller
     {
         $searchTerm = $request->query('q');
 
-        $products = $this->productSelect();
+        $products = Product::products();
 
         if (!empty($searchTerm)) {
             $products = $products->where('name', 'like', "%{$searchTerm}%");
         }
 
-        $products = $products
-            ->orderBy('created_at')
+        return $products->orderBy('name')
             ->paginate(Config::get('constants.pagination.max_item'));
-
-        return $products;
     }
 
     public function show($id)
     {
-        return $this->productSelect()->where('id', $id)->get()->first();
+        return Product::products()->where('id', $id)->get()->first();
     }
 
     public function store()
@@ -81,15 +78,6 @@ class ProductController extends Controller
             'description' => '',
             'brand_id' => 'required|numeric',
             'category_id' => 'required|numeric',
-        ]);
-    }
-
-    private function productSelect()
-    {
-        return Product::with([
-            "brand:id,name",
-            "category:id,name",
-            "productDetails:id,product_id,description",
         ]);
     }
 }
