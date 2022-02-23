@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Str;
 
 class UserFactory extends Factory
 {
@@ -35,6 +35,33 @@ class UserFactory extends Factory
         return $this->state(function (array $attributes) {
             return [
                 'email_verified_at' => null,
+            ];
+        });
+    }
+
+    public function admin()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'role_id' => Config::get('constants.roles.admin'),
+            ];
+        });
+    }
+
+    public function customer()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'role_id' => Config::get('constants.roles.customer'),
+            ];
+        });
+    }
+
+    public function salesPerson()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'role_id' => Config::get('constants.roles.salesperson'),
             ];
         });
     }
