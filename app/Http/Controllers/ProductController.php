@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductRequest;
 use App\Models\Product;
 use App\Models\ProductDetails;
 use Illuminate\Http\Request;
@@ -34,9 +35,9 @@ class ProductController extends Controller
         return Product::products()->where('id', $id)->get()->first();
     }
 
-    public function store()
+    public function store(ProductRequest $request)
     {
-        $data = $this->validateRequest();
+        $data = $request->validated();
 
         DB::transaction(function () use ($data) {
 
@@ -48,9 +49,9 @@ class ProductController extends Controller
         });
     }
 
-    public function update(Product $product)
+    public function update(Product $product, ProductRequest $request)
     {
-        $data = $this->validateRequest();
+        $data = $request->validated();
 
         DB::transaction(function () use ($data, $product) {
             $product->update($data);
@@ -68,16 +69,5 @@ class ProductController extends Controller
         });
 
         return response()->json(null, 204);
-    }
-
-    private function validateRequest()
-    {
-        return request()->validate([
-            'name' => 'required',
-            'summary' => '',
-            'description' => '',
-            'brand_id' => 'required|numeric',
-            'category_id' => 'required|numeric',
-        ]);
     }
 }
