@@ -9,7 +9,6 @@ use App\Models\Sale;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Auth;
 
 class Product extends Model
 {
@@ -45,17 +44,6 @@ class Product extends Model
     public function sales()
     {
         return $this->hasMany(Sale::class);
-    }
-
-    protected static function booted()
-    {
-        static::creating(function ($product) {
-            $product->created_by = Auth::user()->id;
-        });
-
-        static::updating(function ($product) {
-            $product->updated_by = Auth::user()->id;
-        });
     }
 
     public function scopeProducts($query)
