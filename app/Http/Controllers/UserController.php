@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Config;
 
@@ -22,37 +24,18 @@ class UserController extends Controller
         return $user;
     }
 
-    public function store()
+    public function store(StoreUserRequest $request)
     {
-        $data = request()->validate($this->requestValidationArray());
-
-        User::create($data);
+        User::create($request->validated());
     }
 
-    public function update(User $user)
+    public function update(User $user, UpdateUserRequest $request)
     {
-        $data = request()
-            ->validate(array_filter(
-                $this->requestValidationArray(),
-                fn($item) => $item != 'password',
-                ARRAY_FILTER_USE_KEY)
-            );
-
-        $user->update($data);
+        $user->update($request->validated());
     }
 
     public function destroy(User $user)
     {
         $user->delete();
-    }
-
-    private function requestValidationArray()
-    {
-        return [
-            'email' => 'required|email',
-            'role_id' => 'required|numeric|min:1|max:4',
-            'name' => 'required',
-            'password' => 'required',
-        ];
     }
 }
