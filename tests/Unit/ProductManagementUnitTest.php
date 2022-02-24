@@ -10,6 +10,7 @@ use Database\Seeders\BrandSeeder;
 use Database\Seeders\CategorySeeder;
 use Database\Seeders\ProductSeeder;
 use Database\Seeders\UserSeeder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
@@ -67,4 +68,11 @@ class ProductManagementUnitTest extends TestCase
 
         $this->assertTrue(Schema::hasColumns($relationship->getParent()->getTable(), [$foreign_key]));
     }
+
+    /** @test */
+    public function product_should_have_a_scope_method_named_products()
+    {
+        $this->assertInstanceOf(Builder::class, Product::products());
+    }
+    
 }
