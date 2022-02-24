@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Http\Requests\CategoryRequest;
 
 class CategoryController extends Controller
 {
@@ -30,27 +31,19 @@ class CategoryController extends Controller
         return $sub_categories;
     }
 
-    public function store()
+    public function store(CategoryRequest $request)
     {
-        return Category::create($this->validateRequest());
+        return Category::create($request->validated());
     }
 
-    public function update(Category $category)
+    public function update(Category $category, CategoryRequest $request)
     {
-        $category->update($this->validateRequest());
+        $category->update($request->validated());
     }
 
     public function destroy(Category $category)
     {
         $category->delete();
-    }
-
-    private function validateRequest()
-    {
-        return request()->validate([
-            'name' => 'required',
-            'parent_id' => 'nullable|numeric',
-        ]);
     }
 
     private function categoryTree($parents, $categories)
