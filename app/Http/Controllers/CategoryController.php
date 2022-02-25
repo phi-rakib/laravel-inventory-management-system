@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
 use App\Http\Requests\CategoryRequest;
+use App\Models\Category;
 
 class CategoryController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:sanctum');    
+        $this->middleware('auth:sanctum');
     }
 
     public function index()
@@ -43,7 +43,29 @@ class CategoryController extends Controller
 
     public function destroy(Category $category)
     {
-        $category->delete();
+        $categories = Category::all(['id', 'parent_id']);
+
+        $result = [];
+        $color = [];
+        foreach ($categories as $parent) {
+            if ($parent->id == $category->id) {
+                $result[] = $category->id;
+                $this->collectIds($parent->id, $result, $categories, $color);
+                break;
+            }
+        }
+        Category::destroy($result);
+    }
+
+    private function collectIds($parentId, &$result, $categories, &$color)
+    {
+        $color[$parentId] = 1;
+        foreach ($categories as $category) {
+            if (!isset($color[$category->id]) && $parentId == $category->parent_id) {
+                $result[] = $category->id;
+                $this->collectIds($category->id, $result, $categories, $color);
+            }
+        }
     }
 
     private function categoryTree($parents, $categories)

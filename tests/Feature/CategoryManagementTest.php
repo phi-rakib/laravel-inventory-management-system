@@ -102,4 +102,30 @@ class CategoryManagementTest extends TestCase
         $this->assertCount(0, Category::all());
     }
 
+    /** @test */
+    public function deleting_parent_should_delete_all_the_children()
+    {
+        $manually_generated = 12;
+        $seed_generated = Config::get('constants.test.category.total_parent_item') + 25;
+        $total_category = $seed_generated + $manually_generated;
+
+        $this->seed(CategorySeeder::class);
+
+        $category_1 = Category::factory()->create();
+
+        $category_2 = Category::factory()->state(['parent_id' => $category_1->id])->create();
+        $category_3 = Category::factory()->state(['parent_id' => $category_1->id])->create();
+
+        Category::factory()->state(['parent_id' => $category_2->id])->create();
+        Category::factory()->state(['parent_id' => $category_2->id])->count(5)->create();
+
+        Category::factory()->state(['parent_id' => $category_3->id])->count(3)->create();
+
+        $this->assertCount($total_category, Category::all());
+
+        $this->delete('/api/category/' . $category_1->id);
+
+        $this->assertCount($total_category - $manually_generated, Category::all());
+    }
+
 }
