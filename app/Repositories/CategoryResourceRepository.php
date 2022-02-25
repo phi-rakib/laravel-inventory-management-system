@@ -8,12 +8,12 @@ class CategoryResourceRepository implements IResourceRepository
 {
     public function getAll()
     {
-      $parents = Category::whereNull('parent_id')->get();
+        $parents = Category::whereNull('parent_id')->get();
 
-      $categories = Category::whereNotNull('parent_id')
-          ->orderBy('parent_id')->get();
+        $categories = Category::whereNotNull('parent_id')
+            ->orderBy('parent_id')->get();
 
-      return $this->categoryTree($parents, $categories);
+        return $this->categoryTree($parents, $categories);
     }
 
     public function show($category)
@@ -23,12 +23,12 @@ class CategoryResourceRepository implements IResourceRepository
 
     public function create($data)
     {
-      return Category::create($data);
+        return Category::create($data);
     }
 
     public function update($category, $data)
     {
-      return $category->update($data);
+        return $category->update($data);
     }
 
     public function delete($category)
