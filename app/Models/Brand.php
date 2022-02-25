@@ -3,9 +3,8 @@
 namespace App\Models;
 
 use App\Models\Product;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Brand extends Model
@@ -20,16 +19,5 @@ class Brand extends Model
     public function products()
     {
         return $this->hasMany(Product::class);
-    }
-
-    protected static function booted()
-    {
-        static::creating(function ($brand) {
-            $brand->created_by = Auth::user()->id;
-        });
-
-        static::updating(function($brand) {
-            $brand->updated_by = Auth::user()->id;
-        });
     }
 }
