@@ -2,15 +2,14 @@
 
 namespace App\Models;
 
-use App\Models\Sale;
 use App\Models\Order;
 use App\Models\Purchase;
+use App\Models\Sale;
 use App\Models\Transaction;
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -47,7 +46,6 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-
     public function addresses()
     {
         return $this->hasMany(Address::class);
@@ -71,12 +69,5 @@ class User extends Authenticatable
     public function transactions()
     {
         return $this->hasMany(Transaction::class);
-    }
-
-    protected static function booted()
-    {
-        static::creating(function($user){
-            $user->password = bcrypt($user->password);
-        });
     }
 }

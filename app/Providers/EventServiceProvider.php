@@ -4,8 +4,10 @@ namespace App\Providers;
 
 use App\Models\Brand;
 use App\Models\Product;
+use App\Models\User;
 use App\Observers\BrandObserver;
 use App\Observers\ProductObserver;
+use App\Observers\UserObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -33,5 +35,6 @@ class EventServiceProvider extends ServiceProvider
     {
         Product::observe(ProductObserver::class);
         Brand::observe(BrandObserver::class);
+        User::observe(UserObserver::class);
     }
 }
