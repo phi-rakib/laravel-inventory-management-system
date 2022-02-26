@@ -8,13 +8,18 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    public function store(Request $request)
+    public function store()
     {
-        $input = $request->all();
+        $data = request()->validate([
+            'name' => 'required',
+            'email' => 'required|email',
+            'password' => 'required',
+            'role_id' => 'required|numeric|min:3|max:4',
+        ]);
 
-        $user_agent = $request->header('User-Agent');
+        $user = User::create($data);
 
-        $user = User::create($input);
+        $user_agent = request()->header('User-Agent');
 
         $token = $user->createToken($user_agent)->plainTextToken;
 
