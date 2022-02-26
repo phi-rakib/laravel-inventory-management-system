@@ -67,7 +67,7 @@ class AuthManagementTest extends TestCase
             ])->make()->makeVisible('password');
 
         $response = $this->post('/api/user/registration', $user->toArray());
-        
+
         $response->assertSessionHasErrors('role_id');
 
         $this->assertCount(0, User::all());
@@ -153,4 +153,78 @@ class AuthManagementTest extends TestCase
         $response->assertSessionHasErrors('name');
     }
 
+    /** @test */
+    public function a_registered_user_can_login()
+    {
+        $data = [
+            'email' => 'admin@test.com',
+            'password' => '123456',
+        ];
+
+        User::factory()->state($data)->create();
+
+        $response = $this->post('/api/user/login', $data);
+
+        $response->assertOk();
+
+        $this->assertFalse(empty($response['token']));
+
+        $this->assertGreaterThan(0, strlen($response['token']));
+    }
+
+    /** @test */
+    public function check_invalid_login_by_giving_wrong_password()
+    {
+        $data = [
+            'email' => 'admin@test.com',
+            'password' => '123456',
+        ];
+
+        User::factory()->state($data)->create();
+
+        $data['password'] = '12345';
+
+        $response = $this->post('/api/user/login', $data);
+
+        $response->assertUnauthorized();
+    }
+
+    /** @test */
+    public function a_email_is_required_for_login()
+    {
+        $data = [
+            'email' => null,
+            'password' => '123456',
+        ];
+
+        $response = $this->post('/api/user/login', $data);
+
+        $response->assertSessionHasErrors('email');
+    }
+
+    /** @test */
+    public function email_should_be_valid_for_login()
+    {
+        $data = [
+            'email' => 'abc',
+            'password' => '123456',
+        ];
+
+        $response = $this->post('/api/user/login', $data);
+
+        $response->assertSessionHasErrors('email');
+    }
+
+    /** @test */
+    public function a_password_is_required_for_login()
+    {
+        $data = [
+            'email' => 'abc',
+            'password' => null,
+        ];
+
+        $response = $this->post('/api/user/login', $data);
+
+        $response->assertSessionHasErrors('password');
+    }
 }
