@@ -2,22 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    public function store()
+    public function store(StoreUserRequest $request)
     {
-        $data = request()->validate([
-            'name' => 'required',
-            'email' => 'required|email',
-            'password' => 'required',
-            'role_id' => 'required|numeric|min:3|max:4',
-        ]);
-
-        $user = User::create($data);
+        $user = User::create($request->validated());
 
         $user_agent = request()->header('User-Agent');
 
