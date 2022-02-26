@@ -4,69 +4,41 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductRequest;
 use App\Models\Product;
-use App\Models\ProductDetails;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\DB;
+use App\Repositories\IResourceRepository;
 
 class ProductController extends Controller
 {
-    public function __construct()
+    private $productRepository;
+
+    public function __construct(IResourceRepository $productRepository)
     {
         $this->middleware('auth:sanctum');
+        $this->productRepository = $productRepository;
     }
 
-    public function index(Request $request)
+    public function index()
     {
-        $searchTerm = $request->query('q');
-
-        $products = Product::products();
-
-        if (!empty($searchTerm)) {
-            $products = $products->where('name', 'like', "%{$searchTerm}%");
-        }
-
-        return $products->orderBy('name')
-            ->paginate(Config::get('constants.pagination.max_item'));
+        return $this->productRepository->getAll();
     }
 
     public function show($id)
     {
-        return Product::products()->where('id', $id)->get()->first();
+        return $this->productRepository->show($id);
     }
 
     public function store(ProductRequest $request)
     {
-        $data = $request->validated();
-
-        DB::transaction(function () use ($data) {
-
-            $product = Product::create($data);
-
-            $data['product_id'] = $product->id;
-
-            ProductDetails::create($data);
-        });
+        $this->productRepository->create($request->validated());
     }
 
     public function update(Product $product, ProductRequest $request)
     {
-        $data = $request->validated();
-
-        DB::transaction(function () use ($data, $product) {
-            $product->update($data);
-            $product->productDetails->update($data);
-        });
-
-        return response()->json($product, 200);
+        return $this->productRepository->update($product, $request->validated());
     }
 
     public function destroy(Product $product)
     {
-        DB::transaction(function () use ($product) {
-            $product->productDetails->delete();
-            $product->delete();
-        });
+        $this->productRepository->delete($product);
 
         return response()->json(null, 204);
     }

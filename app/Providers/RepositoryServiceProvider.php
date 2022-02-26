@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductController;
 use App\Repositories\CategoryResourceRepository;
 use App\Repositories\IResourceRepository;
+use App\Repositories\ProductResourceRepository;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -21,6 +23,13 @@ class RepositoryServiceProvider extends ServiceProvider
             ->needs(IResourceRepository::class)
             ->give(function () {
                 return new CategoryResourceRepository();
+            });
+
+        $this->app
+            ->when(ProductController::class)
+            ->needs(IResourceRepository::class)
+            ->give(function () {
+                return new ProductResourceRepository();
             });
     }
 
