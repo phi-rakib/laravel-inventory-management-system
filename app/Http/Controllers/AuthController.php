@@ -3,17 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUserRequest;
-use App\Models\User;
+use App\Repositories\IAuthRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
+    private $authRepository;
+
+    public function __construct(IAuthRepository $authRepository)
+    {
+        $this->authRepository = $authRepository;
+    }
+
     public function store(StoreUserRequest $request)
     {
-        $user = User::create($request->validated());
-
-        return ["token" => $this->generateToken($user)];
+        return $this->authRepository->registration($request->validated());
     }
 
     public function login(Request $request)
@@ -23,22 +27,15 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        if (Auth::attempt($data)) {
-            $user = User::where('email', $data['email'])->firstOrFail();
+        $result = $this->authRepository->login($data);
 
-            return ["token" => $this->generateToken($user)];
+        if (empty($result['token'])) {
+            return response()->json(
+                ['message' => 'Invalid login details'],
+                401
+            );
         }
 
-        return response()->json(
-            ['message' => 'Invalid login details'],
-            401
-        );
-    }
-
-    private function generateToken(User $user)
-    {
-        return $user
-            ->createToken(request()->header('User-Agent'))
-            ->plainTextToken;
+        return $result;
     }
 }
