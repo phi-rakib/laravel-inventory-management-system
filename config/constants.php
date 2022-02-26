@@ -4,9 +4,9 @@ return [
 
     'roles' => [
         'admin' => 1,
-        'supplier' => 2,
-        'customer' => 3,
-        'salesperson' => 4,
+        'salesperson' => 2,
+        'supplier' => 3,
+        'customer' => 4,
     ],
 
     'orderStatus' => [
