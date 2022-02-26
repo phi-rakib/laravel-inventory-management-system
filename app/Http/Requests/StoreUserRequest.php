@@ -25,9 +25,12 @@ class StoreUserRequest extends FormRequest
     {
         return [
             'email' => 'required|email',
-            'role_id' => 'required|numeric|min:1|max:4',
-            'name' => 'required',
             'password' => 'required',
+            'name' => 'required',
+            'role_id' => request()->path() == 'api/user'
+            ? 'required|numeric|min:1|max:4'
+            : 'required|numeric|min:3|max:4',
         ];
+
     }
 }
