@@ -13,30 +13,29 @@ class AuthController extends Controller
     {
         $user = User::create($request->validated());
 
-        $user_agent = request()->header('User-Agent');
-
-        $token = $user->createToken($user_agent)->plainTextToken;
-
-        return ["token" => $token];
+        return ["token" => $this->generateToken($user)];
     }
 
     public function login(Request $request)
     {
-        $input = $request->all();
+        $data = $request->all();
 
-        if (Auth::attempt($input)) {
-            $user = User::where('email', $input['email'])->firstOrFail();
+        if (Auth::attempt($data)) {
+            $user = User::where('email', $data['email'])->firstOrFail();
 
-            $user_agent = $request->header('User-Agent');
-
-            $token = $user->createToken($user_agent)->plainTextToken;
-
-            return ["token" => $token];
+            return ["token" => $this->generateToken($user)];
         }
 
         return response()->json(
             ['message' => 'Invalid login details'],
             401
         );
+    }
+
+    private function generateToken(User $user)
+    {
+        return $user
+            ->createToken(request()->header('User-Agent'))
+            ->plainTextToken;
     }
 }
