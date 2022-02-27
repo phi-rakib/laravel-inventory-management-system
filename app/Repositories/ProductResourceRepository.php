@@ -5,14 +5,13 @@ namespace App\Repositories;
 use App\Models\Product;
 use App\Models\ProductDetails;
 use App\Repositories\IResourceRepository;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
 class ProductResourceRepository implements IResourceRepository
 {
-    public function getALl()
+    public function getALl($filters)
     {
-        $searchTerm = request()->query('q');
+        $searchTerm = $filters['q'];
 
         $products = Product::products();
 
@@ -21,7 +20,7 @@ class ProductResourceRepository implements IResourceRepository
         }
 
         return $products->orderBy('name')
-            ->paginate(Config::get('constants.pagination.max_item'));
+            ->paginate($filters['perPage'], ['*'], 'page', $filters['pageNumber'] ?? 1);
     }
 
     public function show($id)
@@ -29,7 +28,12 @@ class ProductResourceRepository implements IResourceRepository
         return Product::products()
             ->where('id', $id)
             ->get()
-            ->first();
+            ->firstOrFail();
+    }
+
+    public function findWhere($column, $value)
+    {
+        return Product::where($column, $value)->firstOrFail();
     }
 
     public function create($data)
@@ -44,8 +48,10 @@ class ProductResourceRepository implements IResourceRepository
         });
     }
 
-    public function update($product, $data)
+    public function update($id, $data)
     {
+        $product = $this->getProductById($id);
+
         DB::transaction(function () use ($data, $product) {
             $product->update($data);
             $product->productDetails->update($data);
@@ -54,11 +60,18 @@ class ProductResourceRepository implements IResourceRepository
         return $product;
     }
 
-    public function delete($product)
+    public function delete($id)
     {
+        $product = $this->getProductById($id);
+
         DB::transaction(function () use ($product) {
             $product->productDetails->delete();
             $product->delete();
         });
+    }
+
+    private function getProductById($id)
+    {
+        return Product::findOrFail($id);
     }
 }

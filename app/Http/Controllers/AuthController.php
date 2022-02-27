@@ -3,21 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUserRequest;
-use App\Repositories\IAuthRepository;
+use App\Services\IAuthService;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
-    private $authRepository;
+    private $authService;
 
-    public function __construct(IAuthRepository $authRepository)
+    public function __construct(IAuthService $authService)
     {
-        $this->authRepository = $authRepository;
+        $this->authService = $authService;
     }
 
     public function store(StoreUserRequest $request)
     {
-        return $this->authRepository->registration($request->validated());
+        return $this->authService->registration($request->validated());
     }
 
     public function login(Request $request)
@@ -27,7 +27,7 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        $result = $this->authRepository->login($data);
+        $result = $this->authService->login($data);
 
         if (empty($result['token'])) {
             return response()->json(

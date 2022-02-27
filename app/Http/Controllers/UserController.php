@@ -4,38 +4,47 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-use App\Models\User;
+use App\Repositories\IResourceRepository;
 use Illuminate\Support\Facades\Config;
 
 class UserController extends Controller
 {
-    public function __construct()
+    private $userRepository;
+
+    public function __construct(IResourceRepository $userRepository)
     {
         $this->middleware('auth:sanctum');
+        $this->userRepository = $userRepository;
     }
 
     public function index()
     {
-        return User::paginate(Config::get('constants.pagination.max_item'));
+        $filters = [
+            'perPage' => Config::get('constants.pagination.max_item'),
+            'pageNumber' => request()->query('page'),
+            'q' => request()->query('q'),
+        ];
+
+        return $this->userRepository->getAll($filters);
     }
 
-    public function show(User $user)
+    public function show($id)
     {
-        return $user;
+        return $this->userRepository->show($id);
     }
 
     public function store(StoreUserRequest $request)
     {
-        User::create($request->validated());
+        $this->userRepository->create($request->validated());
     }
 
-    public function update(User $user, UpdateUserRequest $request)
+    public function update(UpdateUserRequest $request, $id)
     {
-        $user->update($request->validated());
+        return $this->userRepository->update($id, $request->validated());
     }
 
-    public function destroy(User $user)
+    public function destroy($id)
     {
-        $user->delete();
+        $this->userRepository->delete($id);
     }
 }

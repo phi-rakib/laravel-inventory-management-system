@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CategoryRequest;
-use App\Models\Category;
 use App\Repositories\IResourceRepository;
 
 class CategoryController extends Controller
@@ -18,12 +17,12 @@ class CategoryController extends Controller
 
     public function index()
     {
-        return $this->categoryRepository->getAll();
+        return $this->categoryRepository->getAll(null);
     }
 
-    public function show(Category $category)
+    public function show($id)
     {
-        return $this->categoryRepository->show($category);
+        return $this->categoryRepository->show($id);
     }
 
     public function store(CategoryRequest $request)
@@ -31,13 +30,13 @@ class CategoryController extends Controller
         return $this->categoryRepository->create($request->validated());
     }
 
-    public function update(Category $category, CategoryRequest $request)
+    public function update(CategoryRequest $request, $id)
     {
-        return $this->categoryRepository->update($category, $request->validated());
+        return $this->categoryRepository->update($id, $request->validated());
     }
 
-    public function destroy(Category $category)
+    public function destroy($id)
     {
-        $this->categoryRepository->delete($category);
+        $this->categoryRepository->delete($id);
     }
 }

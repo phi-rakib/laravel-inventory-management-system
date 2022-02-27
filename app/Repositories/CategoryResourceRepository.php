@@ -6,7 +6,7 @@ use App\Models\Category;
 
 class CategoryResourceRepository implements IResourceRepository
 {
-    public function getAll()
+    public function getAll($fitlers = null)
     {
         $parents = Category::whereNull('parent_id')->get();
 
@@ -16,9 +16,15 @@ class CategoryResourceRepository implements IResourceRepository
         return $this->categoryTree($parents, $categories);
     }
 
-    public function show($category)
+    public function show($id)
     {
+        $category = $this->getCategoryById($id);
         return $category->children;
+    }
+
+    public function findWhere($column, $value)
+    {
+        return Category::where($column, $value)->firstOrFail();
     }
 
     public function create($data)
@@ -26,13 +32,21 @@ class CategoryResourceRepository implements IResourceRepository
         return Category::create($data);
     }
 
-    public function update($category, $data)
+    public function update($id, $data)
     {
+        $category = $this->getCategoryById($id);
         return $category->update($data);
     }
 
-    public function delete($category)
+    private function getCategoryById($id)
     {
+        return Category::findOrFail($id);
+    }
+
+    public function delete($id)
+    {
+        $category = $this->getCategoryById($id);
+
         $categories = Category::all(['id', 'parent_id']);
 
         $result = [];
