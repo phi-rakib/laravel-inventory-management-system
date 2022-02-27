@@ -75,4 +75,33 @@ class ProductResourceRepositoryTest extends TestCase
         $this->assertDatabaseHas('products', $tmpProduct);
         $this->assertDatabaseHas('product_details', $tmpProductDetails);
     }
+
+    /** @test */
+    public function a_product_can_be_deleted()
+    {
+        Event::fake();
+
+        $user = User::factory()->create();
+
+        $product = Product::factory()->state([
+            'brand_id' => Brand::factory()->state(['created_by' => $user->id])->create(),
+            'category_id' => Category::factory()->create(),
+            'created_by' => $user->id,
+        ])->create();
+
+        ProductDetails::factory()->state(['product_id' => $product->id])->create();
+
+        $this->assertDatabaseCount('products', 1);
+        $this->assertDatabaseCount('product_details', 1);
+
+        $respository = new ProductResourceRepository();
+        $respository->delete($product->id);
+
+        $this->assertCount(0, Product::all());
+        $this->assertCount(0, ProductDetails::all());
+
+        $this->assertCount(1, Product::withTrashed()->get());
+        $this->assertCount(1, ProductDetails::withTrashed()->get());
+    }
+
 }
