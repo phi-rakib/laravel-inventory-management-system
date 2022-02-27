@@ -42,4 +42,37 @@ class ProductResourceRepositoryTest extends TestCase
         $this->assertDatabaseHas('products', ['name' => $product->name]);
         $this->assertDatabaseHas('product_details', ['description' => $productDetails->description]);
     }
+
+    /** @test */
+    public function a_product_can_be_updated()
+    {
+        Event::fake();
+
+        $user = User::factory()->create();
+
+        $product = Product::factory()->state([
+            'brand_id' => Brand::factory()->state(['created_by' => $user->id])->create(),
+            'category_id' => Category::factory()->create(),
+            'created_by' => $user->id,
+        ])->create();
+
+        $productDetails = ProductDetails::factory()->state(['product_id' => $product->id])->create();
+
+        $this->assertDatabaseCount('products', 1);
+        $this->assertDatabaseCount('product_details', 1);
+
+        $tmpProduct = Product::factory()->state([
+            'brand_id' => Brand::factory()->state(['created_by' => $user->id])->create(),
+            'category_id' => Category::factory()->create(),
+            'created_by' => $user->id,
+        ])->make()->toArray();
+
+        $tmpProductDetails = ProductDetails::factory()->state(['product_id' => $productDetails->product_id])->make()->toArray();
+
+        $respository = new ProductResourceRepository();
+        $respository->update($product->id, array_merge($tmpProduct, $tmpProductDetails));
+
+        $this->assertDatabaseHas('products', $tmpProduct);
+        $this->assertDatabaseHas('product_details', $tmpProductDetails);
+    }
 }
