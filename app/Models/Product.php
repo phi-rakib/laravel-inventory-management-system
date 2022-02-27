@@ -19,6 +19,7 @@ class Product extends Model
         'summary',
         'brand_id',
         'category_id',
+        'created_by',
     ];
 
     public function productDetails()
