@@ -5,13 +5,14 @@ namespace App\Repositories;
 use App\Models\Product;
 use App\Models\ProductDetails;
 use App\Repositories\IResourceRepository;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
 class ProductResourceRepository implements IResourceRepository
 {
-    public function getALl($filters)
+    public function getALl($filters = null)
     {
-        $searchTerm = $filters['q'];
+        $searchTerm = $filters['q'] ?? "";
 
         $products = Product::products();
 
@@ -19,8 +20,12 @@ class ProductResourceRepository implements IResourceRepository
             $products = $products->where('name', 'like', "%{$searchTerm}%");
         }
 
-        return $products->orderBy('name')
-            ->paginate($filters['perPage'], ['*'], 'page', $filters['pageNumber'] ?? 1);
+        return $products->orderBy('name')->paginate(
+            $filters['perPage'] ?? Config::get('constants.pagination.max_item'),
+            ['*'],
+            'page',
+            $filters['pageNumber'] ?? 1
+        );
     }
 
     public function show($id)
