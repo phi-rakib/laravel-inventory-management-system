@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
-class ProductRepositoryTest extends TestCase
+class ProductRepositoryUnitTest extends TestCase
 {
     use RefreshDatabase;
 
