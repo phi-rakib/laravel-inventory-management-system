@@ -120,6 +120,17 @@ class ProductResourceRepositoryTest extends TestCase
         $this->assertEquals(Config::get('constants.test.product.max_item'), $products['total']);
     }
 
+    /** @test */
+    public function pagination_should_return_less_or_equal_n_products_per_page()
+    {
+        $this->initSeeder();
+
+        $respository = new ProductResourceRepository();
+        $products = $respository->getALl()->toArray();
+
+        $this->assertLessThanOrEqual(Config::get('constants.pagination.max_item'), count($products['data']));
+    }
+
     private function initSeeder()
     {
         $this->seed([
