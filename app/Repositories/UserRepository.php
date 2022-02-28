@@ -3,9 +3,10 @@
 namespace App\Repositories;
 
 use App\Models\User;
+use App\Repositories\IRepository;
 use Illuminate\Support\Facades\Config;
 
-class UserResourceRepository implements IResourceRepository
+class UserRepository implements IRepository
 {
     public function getAll($filters)
     {

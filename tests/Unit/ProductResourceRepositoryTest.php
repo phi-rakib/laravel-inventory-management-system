@@ -7,7 +7,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductDetails;
 use App\Models\User;
-use App\Repositories\ProductResourceRepository;
+use App\Repositories\ProductRepository;
 use Database\Seeders\BrandSeeder;
 use Database\Seeders\CategorySeeder;
 use Database\Seeders\ProductSeeder;
@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
-class ProductResourceRepositoryTest extends TestCase
+class ProductRepositoryTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -38,7 +38,7 @@ class ProductResourceRepositoryTest extends TestCase
 
         $data = array_merge($product->toArray(), $productDetails->toArray());
 
-        $respository = new ProductResourceRepository();
+        $respository = new ProductRepository();
         $respository->create($data);
 
         $this->assertDatabaseCount('products', 1);
@@ -74,7 +74,7 @@ class ProductResourceRepositoryTest extends TestCase
 
         $tmpProductDetails = ProductDetails::factory()->state(['product_id' => $productDetails->product_id])->make()->toArray();
 
-        $respository = new ProductResourceRepository();
+        $respository = new ProductRepository();
         $respository->update($product->id, array_merge($tmpProduct, $tmpProductDetails));
 
         $this->assertDatabaseHas('products', $tmpProduct);
@@ -99,7 +99,7 @@ class ProductResourceRepositoryTest extends TestCase
         $this->assertDatabaseCount('products', 1);
         $this->assertDatabaseCount('product_details', 1);
 
-        $respository = new ProductResourceRepository();
+        $respository = new ProductRepository();
         $respository->delete($product->id);
 
         $this->assertCount(0, Product::all());
@@ -114,7 +114,7 @@ class ProductResourceRepositoryTest extends TestCase
     {
         $this->initSeeder();
 
-        $respository = new ProductResourceRepository();
+        $respository = new ProductRepository();
         $products = $respository->getALl()->toArray();
 
         $this->assertEquals(Config::get('constants.test.product.max_item'), $products['total']);
@@ -125,7 +125,7 @@ class ProductResourceRepositoryTest extends TestCase
     {
         $this->initSeeder();
 
-        $respository = new ProductResourceRepository();
+        $respository = new ProductRepository();
         $products = $respository->getALl()->toArray();
 
         $this->assertLessThanOrEqual(Config::get('constants.pagination.max_item'), count($products['data']));

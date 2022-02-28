@@ -3,8 +3,9 @@
 namespace App\Repositories;
 
 use App\Models\Category;
+use App\Repositories\IRepository;
 
-class CategoryResourceRepository implements IResourceRepository
+class CategoryRepository implements IRepository
 {
     public function getAll($fitlers = null)
     {

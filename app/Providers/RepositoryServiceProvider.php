@@ -2,15 +2,15 @@
 
 namespace App\Providers;
 
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\UserController;
-use App\Repositories\CategoryResourceRepository;
-use App\Repositories\IResourceRepository;
-use App\Repositories\ProductResourceRepository;
-use App\Repositories\UserResourceRepository;
 use App\Services\AuthService;
+use App\Repositories\IRepository;
+use App\Repositories\UserRepository;
+use App\Repositories\ProductRepository;
 use Illuminate\Support\ServiceProvider;
+use App\Http\Controllers\UserController;
+use App\Repositories\CategoryRepository;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CategoryController;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -21,27 +21,25 @@ class RepositoryServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        // $this->app->bind(IAuthRepository::class, AuthRepository::class);
-
         $this->app
             ->when(CategoryController::class)
-            ->needs(IResourceRepository::class)
+            ->needs(IRepository::class)
             ->give(function () {
-                return new CategoryResourceRepository();
+                return new CategoryRepository();
             });
 
         $this->app
             ->when(ProductController::class)
-            ->needs(IResourceRepository::class)
+            ->needs(IRepository::class)
             ->give(function () {
-                return new ProductResourceRepository();
+                return new ProductRepository();
             });
 
         $this->app
             ->when([UserController::class, AuthService::class])
-            ->needs(IResourceRepository::class)
+            ->needs(IRepository::class)
             ->give(function () {
-                return new UserResourceRepository();
+                return new UserRepository();
             });
     }
 

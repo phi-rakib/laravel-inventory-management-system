@@ -3,14 +3,14 @@
 namespace App\Services;
 
 use App\Models\User;
-use App\Repositories\IResourceRepository;
+use App\Repositories\IRepository;
 use Illuminate\Support\Facades\Auth;
 
 class AuthService implements IAuthService
 {
     private $userRepository;
 
-    public function __construct(IResourceRepository $userRepository)
+    public function __construct(IRepository $userRepository)
     {
         $this->userRepository = $userRepository;
     }

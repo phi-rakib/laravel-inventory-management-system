@@ -4,11 +4,11 @@ namespace App\Repositories;
 
 use App\Models\Product;
 use App\Models\ProductDetails;
-use App\Repositories\IResourceRepository;
-use Illuminate\Support\Facades\Config;
+use App\Repositories\IRepository;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Config;
 
-class ProductResourceRepository implements IResourceRepository
+class ProductRepository implements IRepository
 {
     public function getALl($filters = null)
     {
