@@ -75,7 +75,6 @@ class UserManagementTest extends TestCase
     /** @test */
     public function a_email_is_required()
     {
-
         $user = User::factory()->state([
             'role_id' => Config::get('constants.roles.customer'),
             'email' => '',

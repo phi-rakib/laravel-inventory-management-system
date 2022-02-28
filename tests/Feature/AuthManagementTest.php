@@ -14,8 +14,6 @@ class AuthManagementTest extends TestCase
     /** @test */
     public function a_user_can_register_as_a_supplier()
     {
-        $this->withoutExceptionHandling();
-
         $user = User::factory()
             ->state([
                 'role_id' => Config::get('constants.roles.supplier'),
@@ -30,8 +28,6 @@ class AuthManagementTest extends TestCase
     /** @test */
     public function a_user_can_register_as_a_customer()
     {
-        $this->withoutExceptionHandling();
-
         $user = User::factory()
             ->state([
                 'role_id' => Config::get('constants.roles.customer'),

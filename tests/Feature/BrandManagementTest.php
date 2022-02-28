@@ -48,8 +48,6 @@ class BrandManagementTest extends TestCase
     /** @test */
     public function should_fetch_brand_by_id()
     {
-        $this->withoutExceptionHandling();
-
         Brand::factory()->count(10)->create();
 
         $brand = Brand::inRandomOrder()->first();
