@@ -26,7 +26,7 @@ class CategoryManagementTest extends TestCase
     {
         $this->seed(CategorySeeder::class);
 
-        $response = $this->get('/api/category');
+        $response = $this->get(route('category.index'));
 
         $response->assertOk();
 
@@ -38,7 +38,7 @@ class CategoryManagementTest extends TestCase
     {
         $category = Category::factory()->make()->toArray();
 
-        $response = $this->post('/api/category', $category);
+        $response = $this->post(route('category.store'), $category);
 
         $response->assertCreated();
 
@@ -50,7 +50,7 @@ class CategoryManagementTest extends TestCase
     {
         $category = Category::factory()->state(['name' => ''])->make()->toArray();
 
-        $response = $this->post('/api/category', $category);
+        $response = $this->post(route('category.store'), $category);
 
         $response->assertSessionHasErrors('name');
     }
@@ -60,7 +60,7 @@ class CategoryManagementTest extends TestCase
     {
         $category = Category::factory()->state(['parent_id' => 'abc'])->make()->toArray();
 
-        $response = $this->post('/api/category', $category);
+        $response = $this->post(route('category.store'), $category);
 
         $response->assertSessionHasErrors('parent_id');
     }
@@ -68,7 +68,7 @@ class CategoryManagementTest extends TestCase
     /** @test */
     public function a_category_can_be_updated()
     {
-        $response = $this->post('/api/category', Category::factory()->make()->toArray());
+        $response = $this->post(route('category.store'), Category::factory()->make()->toArray());
 
         $response->assertCreated();
 
@@ -78,7 +78,7 @@ class CategoryManagementTest extends TestCase
 
         $tmpCategory = Category::factory()->state(['parent_id' => 1])->make();
 
-        $this->put('/api/category/' . $category->id, $tmpCategory->toArray());
+        $this->put(route('category.update', ['category' => $category->id]), $tmpCategory->toArray());
 
         $updated_category = Category::first();
 
@@ -89,7 +89,7 @@ class CategoryManagementTest extends TestCase
     /** @test */
     public function a_category_can_be_deleted()
     {
-        $response = $this->post('/api/category', Category::factory()->make()->toArray());
+        $response = $this->post(route('category.store'), Category::factory()->make()->toArray());
 
         $response->assertCreated();
 
@@ -97,7 +97,7 @@ class CategoryManagementTest extends TestCase
 
         $category = Category::first();
 
-        $this->delete('/api/category/' . $category->id);
+        $this->delete(route('category.destroy', ['category' => $category->id]));
 
         $this->assertCount(0, Category::all());
     }
@@ -123,7 +123,7 @@ class CategoryManagementTest extends TestCase
 
         $this->assertCount($total_category, Category::all());
 
-        $this->delete('/api/category/' . $category_1->id);
+        $this->delete(route('category.destroy', ['category' => $category_1->id]));
 
         $this->assertCount($total_category - $manually_generated, Category::all());
     }
