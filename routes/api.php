@@ -18,8 +18,13 @@ use Illuminate\Support\Facades\Route;
 |
  */
 
-Route::post('/user/registration', [AuthController::class, 'store']);
-Route::post('/user/login', [AuthController::class, 'login']);
+// Route::post('/user/registration', [AuthController::class, 'store']);
+// Route::post('/user/login', [AuthController::class, 'login']);
+
+Route::name('user.')->group(function(){
+    Route::post('/user/registration', [AuthController::class, 'store'])->name('registration');
+    Route::post('/user/login', [AuthController::class, 'login'])->name('login');
+});
 
 Route::apiResources([
     'user' => UserController::class,
