@@ -8,7 +8,12 @@ use App\Models\Product;
 use App\Models\ProductDetails;
 use App\Models\User;
 use App\Repositories\ProductResourceRepository;
+use Database\Seeders\BrandSeeder;
+use Database\Seeders\CategorySeeder;
+use Database\Seeders\ProductSeeder;
+use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
 
@@ -102,6 +107,27 @@ class ProductResourceRepositoryTest extends TestCase
 
         $this->assertCount(1, Product::withTrashed()->get());
         $this->assertCount(1, ProductDetails::withTrashed()->get());
+    }
+
+    /** @test */
+    public function should_get_all_the_products()
+    {
+        $this->initSeeder();
+
+        $respository = new ProductResourceRepository();
+        $products = $respository->getALl()->toArray();
+
+        $this->assertEquals(Config::get('constants.test.product.max_item'), $products['total']);
+    }
+
+    private function initSeeder()
+    {
+        $this->seed([
+            UserSeeder::class,
+            BrandSeeder::class,
+            CategorySeeder::class,
+            ProductSeeder::class,
+        ]);
     }
 
 }
