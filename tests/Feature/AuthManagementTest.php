@@ -19,7 +19,7 @@ class AuthManagementTest extends TestCase
                 'role_id' => Config::get('constants.roles.supplier'),
             ])->make()->makeVisible('password');
 
-        $response = $this->post('/api/user/registration', $user->toArray());
+        $response = $this->post(route('user.registration'), $user->toArray());
         $response->assertOk();
 
         $this->assertCount(1, User::all());
@@ -33,7 +33,7 @@ class AuthManagementTest extends TestCase
                 'role_id' => Config::get('constants.roles.customer'),
             ])->make()->makeVisible('password');
 
-        $response = $this->post('/api/user/registration', $user->toArray());
+        $response = $this->post(route('user.registration'), $user->toArray());
         $response->assertOk();
 
         $this->assertCount(1, User::all());
@@ -47,7 +47,7 @@ class AuthManagementTest extends TestCase
                 'role_id' => Config::get('constants.roles.admin'),
             ])->make()->makeVisible('password');
 
-        $response = $this->post('/api/user/registration', $user->toArray());
+        $response = $this->post(route('user.registration'), $user->toArray());
 
         $response->assertSessionHasErrors('role_id');
 
@@ -62,7 +62,7 @@ class AuthManagementTest extends TestCase
                 'role_id' => Config::get('constants.roles.salesperson'),
             ])->make()->makeVisible('password');
 
-        $response = $this->post('/api/user/registration', $user->toArray());
+        $response = $this->post(route('user.registration'), $user->toArray());
 
         $response->assertSessionHasErrors('role_id');
 
@@ -74,7 +74,7 @@ class AuthManagementTest extends TestCase
     {
         $user = User::factory()->state(['email' => null])->make();
 
-        $response = $this->post('/api/user/registration', $user->toArray());
+        $response = $this->post(route('user.registration'), $user->toArray());
 
         $response->assertSessionHasErrors('email');
     }
@@ -84,7 +84,7 @@ class AuthManagementTest extends TestCase
     {
         $user = User::factory()->state(['email' => 'abc'])->make();
 
-        $response = $this->post('/api/user/registration', $user->toArray());
+        $response = $this->post(route('user.registration'), $user->toArray());
 
         $response->assertSessionHasErrors('email');
     }
@@ -94,7 +94,7 @@ class AuthManagementTest extends TestCase
     {
         $user = User::factory()->state(['password' => null])->make();
 
-        $response = $this->post('/api/user/registration', $user->toArray());
+        $response = $this->post(route('user.registration'), $user->toArray());
 
         $response->assertSessionHasErrors('password');
     }
@@ -104,7 +104,7 @@ class AuthManagementTest extends TestCase
     {
         $user = User::factory()->state(['role_id' => null])->make();
 
-        $response = $this->post('/api/user/registration', $user->toArray());
+        $response = $this->post(route('user.registration'), $user->toArray());
 
         $response->assertSessionHasErrors('role_id');
     }
@@ -114,7 +114,7 @@ class AuthManagementTest extends TestCase
     {
         $user = User::factory()->state(['role_id' => 'abc'])->make();
 
-        $response = $this->post('/api/user/registration', $user->toArray());
+        $response = $this->post(route('user.registration'), $user->toArray());
 
         $response->assertSessionHasErrors('role_id');
     }
@@ -124,7 +124,7 @@ class AuthManagementTest extends TestCase
     {
         $user = User::factory()->state(['role_id' => 2])->make();
 
-        $response = $this->post('/api/user/registration', $user->toArray());
+        $response = $this->post(route('user.registration'), $user->toArray());
 
         $response->assertSessionHasErrors('role_id');
     }
@@ -134,7 +134,7 @@ class AuthManagementTest extends TestCase
     {
         $user = User::factory()->state(['role_id' => 5])->make();
 
-        $response = $this->post('/api/user/registration', $user->toArray());
+        $response = $this->post(route('user.registration'), $user->toArray());
 
         $response->assertSessionHasErrors('role_id');
     }
@@ -144,7 +144,7 @@ class AuthManagementTest extends TestCase
     {
         $user = User::factory()->state(['name' => null])->make();
 
-        $response = $this->post('/api/user/registration', $user->toArray());
+        $response = $this->post(route('user.registration'), $user->toArray());
 
         $response->assertSessionHasErrors('name');
     }
@@ -159,7 +159,7 @@ class AuthManagementTest extends TestCase
 
         User::factory()->state($data)->create();
 
-        $response = $this->post('/api/user/login', $data);
+        $response = $this->post(route('user.login'), $data);
 
         $response->assertOk();
 
@@ -180,7 +180,7 @@ class AuthManagementTest extends TestCase
 
         $data['password'] = '12345';
 
-        $response = $this->post('/api/user/login', $data);
+        $response = $this->post(route('user.login'), $data);
 
         $response->assertUnauthorized();
     }
@@ -193,7 +193,7 @@ class AuthManagementTest extends TestCase
             'password' => '123456',
         ];
 
-        $response = $this->post('/api/user/login', $data);
+        $response = $this->post(route('user.login'), $data);
 
         $response->assertSessionHasErrors('email');
     }
@@ -206,7 +206,7 @@ class AuthManagementTest extends TestCase
             'password' => '123456',
         ];
 
-        $response = $this->post('/api/user/login', $data);
+        $response = $this->post(route('user.login'), $data);
 
         $response->assertSessionHasErrors('email');
     }
@@ -219,7 +219,7 @@ class AuthManagementTest extends TestCase
             'password' => null,
         ];
 
-        $response = $this->post('/api/user/login', $data);
+        $response = $this->post(route('user.login'), $data);
 
         $response->assertSessionHasErrors('password');
     }
