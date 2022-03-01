@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-interface IAuthService
+interface AuthServiceInterface
 {
     public function login($data);
 

@@ -3,10 +3,11 @@
 namespace App\Services;
 
 use App\Models\User;
-use App\Repositories\UserRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
+use App\Services\AuthServiceInterface;
+use App\Repositories\UserRepositoryInterface;
 
-class AuthService implements IAuthService
+class AuthService implements AuthServiceInterface
 {
     private $userRepository;
 
