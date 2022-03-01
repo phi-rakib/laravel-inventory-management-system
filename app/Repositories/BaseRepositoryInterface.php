@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-interface IRepository
+interface BaseRepositoryInterface
 {
     public function getAll($filters);
 

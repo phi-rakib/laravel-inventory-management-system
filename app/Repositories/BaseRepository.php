@@ -2,10 +2,11 @@
 
 namespace App\Repositories;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Database\Eloquent\Model;
+use App\Repositories\BaseRepositoryInterface;
 
-class BaseRepository implements IRepository
+class BaseRepository implements BaseRepositoryInterface
 {
     protected $model;
 
