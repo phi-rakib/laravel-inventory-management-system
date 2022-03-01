@@ -21,6 +21,14 @@ class ProductRepositoryUnitTest extends TestCase
 {
     use RefreshDatabase;
 
+    private $respository;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->respository = new ProductRepository(new Product);
+    }
+
     /** @test */
     public function a_product_can_be_created()
     {
@@ -38,8 +46,7 @@ class ProductRepositoryUnitTest extends TestCase
 
         $data = array_merge($product->toArray(), $productDetails->toArray());
 
-        $respository = new ProductRepository();
-        $respository->create($data);
+        $this->respository->create($data);
 
         $this->assertDatabaseCount('products', 1);
         $this->assertDatabaseCount('product_details', 1);
@@ -74,8 +81,7 @@ class ProductRepositoryUnitTest extends TestCase
 
         $tmpProductDetails = ProductDetails::factory()->state(['product_id' => $productDetails->product_id])->make()->toArray();
 
-        $respository = new ProductRepository();
-        $respository->update($product->id, array_merge($tmpProduct, $tmpProductDetails));
+        $this->respository->update($product->id, array_merge($tmpProduct, $tmpProductDetails));
 
         $this->assertDatabaseHas('products', $tmpProduct);
         $this->assertDatabaseHas('product_details', $tmpProductDetails);
@@ -99,8 +105,7 @@ class ProductRepositoryUnitTest extends TestCase
         $this->assertDatabaseCount('products', 1);
         $this->assertDatabaseCount('product_details', 1);
 
-        $respository = new ProductRepository();
-        $respository->delete($product->id);
+        $this->respository->delete($product->id);
 
         $this->assertCount(0, Product::all());
         $this->assertCount(0, ProductDetails::all());
@@ -114,8 +119,7 @@ class ProductRepositoryUnitTest extends TestCase
     {
         $this->initSeeder();
 
-        $respository = new ProductRepository();
-        $products = $respository->getALl()->toArray();
+        $products = $this->respository->getALl()->toArray();
 
         $this->assertEquals(Config::get('constants.test.product.max_item'), $products['total']);
     }
@@ -125,8 +129,7 @@ class ProductRepositoryUnitTest extends TestCase
     {
         $this->initSeeder();
 
-        $respository = new ProductRepository();
-        $products = $respository->getALl()->toArray();
+        $products = $this->respository->getALl()->toArray();
 
         $this->assertLessThanOrEqual(Config::get('constants.pagination.max_item'), count($products['data']));
     }

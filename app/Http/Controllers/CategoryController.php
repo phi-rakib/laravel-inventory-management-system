@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CategoryRequest;
-use App\Repositories\IRepository;
+use App\Repositories\CategoryRepositoryInterface;
 
 class CategoryController extends Controller
 {
     private $categoryRepository;
 
-    public function __construct(IRepository $categoryRepository)
+    public function __construct(CategoryRepositoryInterface $categoryRepository)
     {
         $this->middleware('auth:sanctum');
         $this->categoryRepository = $categoryRepository;
@@ -17,7 +17,7 @@ class CategoryController extends Controller
 
     public function index()
     {
-        return $this->categoryRepository->getAll(null);
+        return $this->categoryRepository->getAll();
     }
 
     public function show($id)

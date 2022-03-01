@@ -4,17 +4,23 @@ namespace App\Repositories;
 
 use App\Models\Product;
 use App\Models\ProductDetails;
-use App\Repositories\IRepository;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 
-class ProductRepository implements IRepository
+class ProductRepository extends BaseRepository implements ProductRepositoryInterface
 {
+    protected $model;
+
+    public function __construct(Product $model)
+    {
+        parent::__construct($model);
+    }
+
     public function getALl($filters = null)
     {
         $searchTerm = $filters['q'] ?? "";
 
-        $products = Product::products();
+        $products = $this->model::products();
 
         if (!empty($searchTerm)) {
             $products = $products->where('name', 'like', "%{$searchTerm}%");
@@ -30,22 +36,17 @@ class ProductRepository implements IRepository
 
     public function show($id)
     {
-        return Product::products()
+        return $this->model::products()
             ->where('id', $id)
             ->get()
             ->firstOrFail();
-    }
-
-    public function findWhere($column, $value)
-    {
-        return Product::where($column, $value)->firstOrFail();
     }
 
     public function create($data)
     {
         DB::transaction(function () use ($data) {
 
-            $product = Product::create($data);
+            $product = $this->model::create($data);
 
             $data['product_id'] = $product->id;
 
@@ -55,7 +56,7 @@ class ProductRepository implements IRepository
 
     public function update($id, $data)
     {
-        $product = $this->getProductById($id);
+        $product = parent::show($id);
 
         DB::transaction(function () use ($data, $product) {
             $product->update($data);
@@ -67,16 +68,11 @@ class ProductRepository implements IRepository
 
     public function delete($id)
     {
-        $product = $this->getProductById($id);
+        $product = parent::show($id);
 
         DB::transaction(function () use ($product) {
             $product->productDetails->delete();
             $product->delete();
         });
-    }
-
-    private function getProductById($id)
-    {
-        return Product::findOrFail($id);
     }
 }

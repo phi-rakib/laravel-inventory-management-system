@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductRequest;
-use App\Repositories\IRepository;
+use App\Repositories\ProductRepositoryInterface;
 use Illuminate\Support\Facades\Config;
 
 class ProductController extends Controller
 {
     private $productRepository;
 
-    public function __construct(IRepository $productRepository)
+    public function __construct(ProductRepositoryInterface $productRepository)
     {
         $this->middleware('auth:sanctum');
         $this->productRepository = $productRepository;

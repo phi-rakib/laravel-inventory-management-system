@@ -3,38 +3,49 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\BrandRequest;
-use App\Models\Brand;
+use App\Repositories\BrandRepositoryInterface;
 use Illuminate\Support\Facades\Config;
 
 class BrandController extends Controller
 {
-    public function __construct()
+    private $brandRepository;
+
+    public function __construct(BrandRepositoryInterface $brandRepository)
     {
         $this->middleware('auth:sanctum');
+        $this->brandRepository = $brandRepository;
     }
 
     public function index()
     {
-        return Brand::paginate(Config::get('constants.pagination.max_item'));
+        $filters = [
+            'perPage' => Config::get('constants.pagination.max_item'),
+            'pageNumber' => request()->query('page'),
+            'q' => request()->query('q'),
+        ];
+
+        return $this->brandRepository->getAll($filters);
     }
 
-    public function show(Brand $brand)
+    public function show($id)
     {
-        return $brand;
+        return $this->brandRepository->show($id);
     }
 
     public function store(BrandRequest $request)
     {
-        Brand::create($request->validated());
+        $this->brandRepository->create($request->validated());
     }
 
-    public function update(Brand $brand, BrandRequest $request)
+    public function update($id, BrandRequest $request)
     {
-        $brand->update($request->validated());
+        $this->brandRepository->update($id, $request->validated());
     }
 
-    public function destroy(Brand $brand)
+    public function destroy($id)
     {
-        $brand->delete();
+        $this->brandRepository->delete($id);
+
+        return response()->json(null, 204);
     }
 }

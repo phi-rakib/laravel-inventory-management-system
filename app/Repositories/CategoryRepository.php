@@ -3,10 +3,18 @@
 namespace App\Repositories;
 
 use App\Models\Category;
-use App\Repositories\IRepository;
+use App\Repositories\BaseRepository;
+use App\Repositories\CategoryRepositoryInterface;
 
-class CategoryRepository implements IRepository
+class CategoryRepository extends BaseRepository implements CategoryRepositoryInterface
 {
+    protected $model;
+
+    public function ___construct(Category $model)
+    {
+        $this->model = $model;
+    }
+
     public function getAll($fitlers = null)
     {
         $parents = Category::whereNull('parent_id')->get();
@@ -19,34 +27,13 @@ class CategoryRepository implements IRepository
 
     public function show($id)
     {
-        $category = $this->getCategoryById($id);
+        $category = parent::show($id);
         return $category->children;
-    }
-
-    public function findWhere($column, $value)
-    {
-        return Category::where($column, $value)->firstOrFail();
-    }
-
-    public function create($data)
-    {
-        return Category::create($data);
-    }
-
-    public function update($id, $data)
-    {
-        $category = $this->getCategoryById($id);
-        return $category->update($data);
-    }
-
-    private function getCategoryById($id)
-    {
-        return Category::findOrFail($id);
     }
 
     public function delete($id)
     {
-        $category = $this->getCategoryById($id);
+        $category = parent::show($id);
 
         $categories = Category::all(['id', 'parent_id']);
 

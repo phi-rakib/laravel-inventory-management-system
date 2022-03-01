@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-use App\Repositories\IRepository;
+use App\Repositories\UserRepositoryInterface;
 use Illuminate\Support\Facades\Config;
 
 class UserController extends Controller
 {
     private $userRepository;
 
-    public function __construct(IRepository $userRepository)
+    public function __construct(UserRepositoryInterface $userRepository)
     {
         $this->middleware('auth:sanctum');
         $this->userRepository = $userRepository;
