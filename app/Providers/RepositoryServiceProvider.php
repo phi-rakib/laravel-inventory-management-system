@@ -2,25 +2,24 @@
 
 namespace App\Providers;
 
-use App\Models\User;
+use App\Http\Controllers\BrandController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\UserController;
 use App\Models\Brand;
 use App\Models\Category;
-use App\Services\AuthService;
-use App\Repositories\IRepository;
-use App\Repositories\UserRepository;
-use App\Repositories\BrandRepository;
-use App\Repositories\ProductRepository;
-use Illuminate\Support\ServiceProvider;
-use App\Http\Controllers\UserController;
-use App\Repositories\CategoryRepository;
-use App\Http\Controllers\BrandController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\CategoryController;
 use App\Models\Product;
-use App\Repositories\UserRepositoryInterface;
+use App\Models\User;
+use App\Repositories\BrandRepository;
 use App\Repositories\BrandRepositoryInterface;
+use App\Repositories\CategoryRepository;
 use App\Repositories\CategoryRepositoryInterface;
+use App\Repositories\ProductRepository;
 use App\Repositories\ProductRepositoryInterface;
+use App\Repositories\UserRepository;
+use App\Repositories\UserRepositoryInterface;
+use App\Services\AuthService;
+use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -32,22 +31,8 @@ class RepositoryServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app
-            ->when(CategoryController::class)
-            ->needs(CategoryRepositoryInterface::class)
-            ->give(function () {
-                return new CategoryRepository(new Category());
-            });
-
-        $this->app
-            ->when(ProductController::class)
-            ->needs(ProductRepositoryInterface::class)
-            ->give(function () {
-                return new ProductRepository(new Product());
-            });
-
-        $this->app
             ->when([AuthService::class])
-            ->needs(IRepository::class)
+            ->needs(UserRepositoryInterface::class)
             ->give(function () {
                 return new UserRepository(new User);
             });
@@ -64,6 +49,20 @@ class RepositoryServiceProvider extends ServiceProvider
             ->needs(BrandRepositoryInterface::class)
             ->give(function () {
                 return new BrandRepository(new Brand);
+            });
+
+        $this->app
+            ->when(CategoryController::class)
+            ->needs(CategoryRepositoryInterface::class)
+            ->give(function () {
+                return new CategoryRepository(new Category());
+            });
+
+        $this->app
+            ->when(ProductController::class)
+            ->needs(ProductRepositoryInterface::class)
+            ->give(function () {
+                return new ProductRepository(new Product());
             });
     }
 

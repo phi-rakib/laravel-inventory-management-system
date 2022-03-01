@@ -3,14 +3,14 @@
 namespace App\Services;
 
 use App\Models\User;
-use App\Repositories\IRepository;
+use App\Repositories\UserRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
 
 class AuthService implements IAuthService
 {
     private $userRepository;
 
-    public function __construct(IRepository $userRepository)
+    public function __construct(UserRepositoryInterface $userRepository)
     {
         $this->userRepository = $userRepository;
     }
@@ -20,7 +20,6 @@ class AuthService implements IAuthService
         $token = '';
 
         if (Auth::attempt($data)) {
-            // $user = User::where('email', $data['email'])->firstOrFail();
             $user = $this->userRepository->findWhere('email', $data['email']);
             $token = $this->generateToken($user);
         }
@@ -35,8 +34,6 @@ class AuthService implements IAuthService
 
     public function registration($data)
     {
-        // $user = User::create($data);
-
         $user = $this->userRepository->create($data);
 
         return ["token" => $this->generateToken($user)];
