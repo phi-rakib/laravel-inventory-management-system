@@ -45,9 +45,8 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
 
             $product = $this->model::create($data);
 
-            $data['product_id'] = $product->id;
+            $product->productDetails()->create($data);
 
-            ProductDetails::create($data);
         });
     }
 
@@ -56,8 +55,11 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
         $product = parent::show($id);
 
         DB::transaction(function () use ($data, $product) {
+
             $product->update($data);
+
             $product->productDetails->update($data);
+            
         });
 
         return $product;
