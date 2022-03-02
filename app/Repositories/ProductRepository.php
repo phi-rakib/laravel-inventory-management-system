@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\Models\Product;
-use App\Models\ProductDetails;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
@@ -59,7 +58,7 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             $product->update($data);
 
             $product->productDetails->update($data);
-            
+
         });
 
         return $product;
@@ -70,8 +69,11 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
         $product = parent::show($id);
 
         DB::transaction(function () use ($product) {
+
             $product->productDetails->delete();
+
             $product->delete();
+
         });
     }
 }
