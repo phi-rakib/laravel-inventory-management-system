@@ -36,10 +36,7 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
 
     public function show($id)
     {
-        return $this->model::products()
-            ->where('id', $id)
-            ->get()
-            ->firstOrFail();
+        return $this->model::products()->findOrFail($id);
     }
 
     public function create($data)
