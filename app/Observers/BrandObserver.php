@@ -15,7 +15,7 @@ class BrandObserver
      */
     public function creating(Brand $brand)
     {
-        $brand->created_by = Auth::user()->id;
+        $brand->created_by = Auth::id();
     }
 
     /**
@@ -37,7 +37,7 @@ class BrandObserver
      */
     public function updating(Brand $brand)
     {
-        $brand->updated_by = Auth::user()->id;
+        $brand->updated_by = Auth::id();
     }
 
     /**

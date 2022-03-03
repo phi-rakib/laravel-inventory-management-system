@@ -15,7 +15,7 @@ class ProductObserver
      */
     public function creating(Product $product)
     {
-        $product->created_by = Auth::user()->id;
+        $product->created_by = Auth::id();
     }
 
     /**
@@ -37,7 +37,7 @@ class ProductObserver
      */
     public function updating(Product $product)
     {
-        $product->updated_by = Auth::user()->id;
+        $product->updated_by = Auth::id();
     }
 
     /**
